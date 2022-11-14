@@ -10,14 +10,11 @@ let restaurantSchema = new mongoose.Schema({
     address: {
         type: String, default: ""
     },
+    menu:[{ type: String }],
+
     creatorID: mongoose.ObjectId,
     workersArray: [mongoose.ObjectId],
     info:String,
-
-
-
-
-
 })
 
 exports.RestaurantModel = mongoose.model("restaurants", restaurantSchema);
