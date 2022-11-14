@@ -7,8 +7,11 @@ let WorkerSchema = new mongoose.Schema({
     },
     email: String,
     password: String,
-    pin:Number,
-    role: [{ type: String }],
+    pin: Number,
+    jobs: [{ type: String }],
+    role: {
+        type: String, default: "user"
+    },
     phone: String,
 
     restaurantID: [mongoose.ObjectId],

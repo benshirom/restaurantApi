@@ -1,4 +1,5 @@
 const { UserModel } = require("../models/userModel");
+const { WorkerModel } = require("../models/workerModel");
 const bcrypt = require("bcrypt");
 const { validUser  ,validLogin} = require("../validation/userValidation");
 const { createToken } = require("../helpers/userHelper");
