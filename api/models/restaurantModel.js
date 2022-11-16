@@ -3,18 +3,28 @@ const mongoose = require("mongoose");
 let restaurantSchema = new mongoose.Schema({
     name: String,
     email: String,
-    date_created: {
-        type: Date, default: Date.now()
-    },
     phone: String,
+    info:String,
+    creatorID: mongoose.ObjectId,
     address: {
         type: String, default: ""
     },
-    menu:[{ type: String }],
-
-    creatorID: mongoose.ObjectId,
+    date_created: {
+        type: Date, default: Date.now()
+    },
+    
+    //Item Menu Id
+    menu:[mongoose.ObjectId],
+    //Worker Id
     workersArray: [mongoose.ObjectId],
-    info:String,
+    //Table Id
+    tables:[mongoose.ObjectId],
+    //order Id
+    orders:[mongoose.ObjectId],
+
+    verified: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
+  
 })
 
 exports.RestaurantModel = mongoose.model("restaurants", restaurantSchema);

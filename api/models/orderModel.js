@@ -1,17 +1,16 @@
 const mongoose = require("mongoose");
 
 let orderSchema = new mongoose.Schema({
-    restaurantID: mongoose.ObjectId,
-
+    //Item Menu Id
+    orderItems: [mongoose.ObjectId],
+    status: String,
+    estimatedTime: Date ,
+    Discount: { type: Number, default: 0 },
+    finalPrice: { type: Number, default: 0 },
     date_created: {
         type: Date, default: Date.now()
     },
-    orderItems: [{ type: String }],
-    estimatedTime: Date ,
-    finalPrice: { type: Number, default: 0 },
-    Discount: { type: Number, default: 0 },
-    status: String,
-
+    
     byWorker: {
         tableNumber: Number,
         workerID: mongoose.ObjectId,

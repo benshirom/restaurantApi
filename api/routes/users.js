@@ -8,9 +8,17 @@ const router = express.Router();
 router.get("/myInfo",auth,userCtrl.myInfo)
 // רק משתמש אדמין יוכל להגיע ולהציג את רשימת 
 // כל המשתמשים
-
-router.get("/usersList", authAdmin ,userCtrl.userList)
 router.post("/",authCtrl.signUp)
 router.post("/login", authCtrl.login)
+
+router.get("/usersList", authAdmin ,userCtrl.userList)
+router.patch("/changeJob/:editId", authAdmin, userCtrl.editworkerJob)
+router.delete("/:delId", authAdmin, userCtrl.deleteUser)
+
+router.get("/verify/:userId/:uniqueString",authCtrl.verifyUser)
+router.get("/verified",authCtrl.verifiedUser)
+router.delete("/:delId", auth, userCtrl.deleteUser)
+
+
 
 module.exports = router;
