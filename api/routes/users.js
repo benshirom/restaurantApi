@@ -9,6 +9,9 @@ router.get("/myInfo",auth,userCtrl.myInfo)
 // רק משתמש אדמין יוכל להגיע ולהציג את רשימת 
 // כל המשתמשים
 router.post("/",authCtrl.signUp)
+router.post("/manager",authCtrl.signUpManager)
+router.post("/worker",authCtrl.signUpWorker)
+router.patch("/worker/:workerId",userCtrl.WorkerFillDetails)
 router.post("/login", authCtrl.login)
 
 router.get("/usersList", authAdmin ,userCtrl.userList)

@@ -57,17 +57,18 @@ exports.authWaiter = (req, res, next) => {
     // check if the role in the token of admin
     if (!decodeToken.jobs) {
       return res.status(401).json({ msg: "Token invalid or expired or not worker." })
-    } else {
+    } 
+    else {
       decodeToken.jobs.forEach(job => {
         if (job == "waiter") {
-          isManager = true;
+          isWaiter = true;
         }
       });
     }
 
     // add to req , so the next function will recognize
     // the tokenData/decodeToken
-    if (isManager) {
+    if (isWaiter) {
       req.tokenData = decodeToken;
       next();
     }

@@ -1,6 +1,6 @@
 const { UserModel } = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const { validUser  ,validLogin} = require("../validation/userValidation");
+const { validUser  ,validLogin,validSignUpWorker,validSignUpManager,validWorkerFillDetails} = require("../validation/userValidation");
 const { createToken } = require("../helpers/userHelper");
 
 exports.authCtrl = {
@@ -29,11 +29,56 @@ exports.authCtrl = {
           console.log(err);
           res.status(500).json({msg:"err",err})
         }
-      }
-      ,
-      signUpWorker: async (req, res) => {
-
       },
+      signUpManager: async (req, res) => {
+        let validBody = validSignUpManager(req.body);
+        // במידה ויש טעות בריק באדי שהגיע מצד לקוח
+        // יווצר מאפיין בשם אירור ונחזיר את הפירוט של הטעות
+        if(validBody.error){
+          return res.status(400).json(validBody.error.details);
+        }
+        try{
+          let user = new UserModel(req.body);
+          // נרצה להצפין את הסיסמא בצורה חד כיוונית
+          // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
+          user.password = await bcrypt.hash(user.password, 10);
+      
+          await user.save();
+          user.password = "***";
+          res.status(201).json(user);
+        }
+        catch(err){
+          if(err.code == 11000){
+            return res.status(500).json({msg:"Email already in system, try log in",code:11000})
+             
+          }
+          console.log(err);
+          res.status(500).json({msg:"err",err})
+        }
+      },
+      signUpWorker: async (req, res) => {
+        let validBody = validSignUpWorker(req.body);
+        // במידה ויש טעות בריק באדי שהגיע מצד לקוח
+        // יווצר מאפיין בשם אירור ונחזיר את הפירוט של הטעות
+        if(validBody.error){
+          return res.status(400).json(validBody.error.details);
+        }
+        try{
+          let user = new UserModel(req.body);
+          // נרצה להצפין את הסיסמא בצורה חד כיוונית
+          // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
+          res.status(201).json(user);
+        }
+        catch(err){
+          if(err.code == 11000){
+            return res.status(500).json({msg:"Email already in system, try log in",code:11000})
+             
+          }
+          console.log(err);
+          res.status(500).json({msg:"err",err})
+        }
+      },
+    
 
       login:async(req,res) => {
         let validBody = validLogin(req.body);

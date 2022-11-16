@@ -3,35 +3,35 @@ const { RestaurantCtrl } = require("../controllers/restaurantControll");
 const { WorkerCtrl } = require("../controllers/workerControll");
 const { MenuCtrl } = require("../controllers/menuControll");
 const { OrderCtrl } = require("../controllers/oderControll");
-const { auth, authAdmin } = require("../middlewares/auth");
+const { auth, authAdmin,authWorker,authManager,authWaiter } = require("../middlewares/auth");
 
 const router = express.Router();
 
 
 
-router.get("/" ,auth,RestaurantCtrl.getRestaurant)
-router.put("/:editId", auth,RestaurantCtrl.editrestaurant)
-router.get("/" ,RestaurantCtrl.shifts)
+router.get("/" ,authWorker,RestaurantCtrl.getRestaurant)
+router.put("/:editId", authManager,RestaurantCtrl.editrestaurant)
+router.get("/shifts" ,authWorker,RestaurantCtrl.shifts)
 router.post("/shifts/addShist" ,RestaurantCtrl.addShifts)
-router.get("/getPaymentCalculation" ,auth,RestaurantCtrl.getRestaurantPaymentCalculation)
-router.get("/" ,auth,RestaurantCtrl.getTable)
+router.get("/getPaymentCalculation" ,authManager,RestaurantCtrl.getRestaurantPaymentCalculation)
+router.get("/tables" ,auth,RestaurantCtrl.getTable)
 
 
 
-router.post("/", authAdmin, WorkerCtrl.addworker)
-router.delete("/:delId", auth, WorkerCtrl.deleteWorker)
-router.put("/:editId", authAdmin,WorkerCtrl.editWorker)
+router.post("/Staff", authManager, WorkerCtrl.addworker)
+router.delete("/Staff/:delId", authManager, WorkerCtrl.deleteWorker)
+router.put("/Staff/:editId", authManager,WorkerCtrl.editWorker)
 
 
-router.get("/" ,auth,OrderCtrl.getOrder)
-router.post("/order" ,auth,OrderCtrl.addOrder)
-router.post("/payOrder" ,auth,OrderCtrl.payOnOrder)
-router.post("/discount" ,auth,OrderCtrl.discountOnOrder)
+router.get("/orders" ,authWorker,OrderCtrl.getOrder)
+router.post("/orders" ,authWorker,OrderCtrl.addOrder)
+router.post("/orders/payOrder" ,auth,OrderCtrl.payOnOrder)
+router.post("/orders/discount/:orderId" ,authManager,OrderCtrl.discountOnOrder)
 
-router.get("/" ,auth,MenuCtrl.getMenu)
-router.post("/", authAdmin, MenuCtrl.addItemMenu)
-router.delete("/:delItemId", auth, MenuCtrl.deleteItemMenu)
-router.put("/:editItemId", authAdmin,MenuCtrl.editItemMenu)
+router.get("/Menu" ,MenuCtrl.getMenu)
+router.post("/Menu", authManager, MenuCtrl.addItemMenu)
+router.delete("Menu/:delItemId", authManager, MenuCtrl.deleteItemMenu)
+router.put("Menu/:editItemId", authManager,MenuCtrl.editItemMenu)
 
     
 
