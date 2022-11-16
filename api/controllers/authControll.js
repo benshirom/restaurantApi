@@ -53,7 +53,7 @@ exports.authCtrl = {
             return res.status(401).json({msg:"Password or email is worng ,code:2"});
           }
           // מייצרים טוקן לפי שמכיל את האיידי של המשתמש
-          let token = createToken(user._id,user.role,user.worker);
+          let token = createToken(user._id,user.role,user.worker.jobs);
           res.json({token});
         }
         catch(err){
