@@ -3,6 +3,6 @@ const { UserModel } = require("../models/userModel");
 
 
 
-exports.RestauranCtrl={
+exports.WorkerCtrl={
     
 }
