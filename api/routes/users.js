@@ -16,11 +16,11 @@ router.post("/login", authCtrl.login)
 
 router.get("/usersList", authAdmin ,userCtrl.userList)
 router.patch("/changeJob/:editId", authAdmin, userCtrl.editworkerJob)
-router.delete("/:delId", authAdmin, userCtrl.deleteUser)
+router.delete("/:delId", auth, userCtrl.deleteUser)
 
 router.get("/verify/:userId/:uniqueString",authCtrl.verifyUser)
 router.get("/verified",authCtrl.verifiedUser)
-router.delete("/:delId", auth, userCtrl.deleteUser)
+// router.delete("/:delId", auth, userCtrl.deleteUser)
 
 
 
