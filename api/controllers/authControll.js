@@ -1,6 +1,6 @@
 const { UserModel } = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const { validUser  ,validLogin,validSignUpWorker,validSignUpManager,validWorkerFillDetails} = require("../validation/userValidation");
+const { validUser  ,validLogin,validSignUpWorker,validSignUpManager} = require("../validation/userValidation");
 const { createToken } = require("../helpers/userHelper");
 
 exports.authCtrl = {
