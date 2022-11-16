@@ -7,13 +7,18 @@ let restaurantSchema = new mongoose.Schema({
     info:String,
     creatorID: mongoose.ObjectId,
     address: {
-        Country:{type: String, default: ""} ,
-        Street: {type: String, default: ""}
+        country:{type: String, default: ""} ,
+        city:{type: String, default: ""} ,
+        Street: {type: String, default: ""},
+        num: Number
     },
     date_created: {
         type: Date, default: Date.now()
     },
-    gallry:[{type: String}], 
+    gallry:{
+        img:[{type: String, default: ""}],
+        video:[{type: String, default: ""}],
+    },
     //Item Menu Id
     menu:[mongoose.ObjectId],
     //Worker Id

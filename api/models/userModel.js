@@ -27,7 +27,12 @@ let userSchema = new mongoose.Schema({
   },
 
   custumer: {
-    address: String,
+    address: {
+      country:{type: String, default: ""} ,
+      city:{type: String, default: ""} ,
+      Street: {type: String, default: ""},
+      num: Number
+  },
     ordersaArr: [mongoose.ObjectId]
   }
 
