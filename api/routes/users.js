@@ -15,7 +15,7 @@ router.patch("/worker/:workerId",userCtrl.WorkerFillDetails)
 router.post("/login", authCtrl.login)
 
 router.get("/usersList", authAdmin ,userCtrl.userList)
-router.patch("/changeJob/:editId", authAdmin, userCtrl.editworkerJob)
+router.patch("/changeJob/:editId", authAdmin, userCtrl.editWorkerJob)
 router.delete("/:delId", auth, userCtrl.deleteUser)
 
 router.get("/verify/:userId/:uniqueString",authCtrl.verifyUser)

@@ -30,9 +30,9 @@ exports.userCtrl = {
           lastName: req.body.fullName.lastName
         },
         phone: req.body.phone,
-        password:hashPass,
-        worker:{pin:req.body.worker.pin}
-          })
+        password: hashPass,
+        worker: { pin: req.body.worker.pin }
+      })
       // נרצה להצפין את הסיסמא בצורה חד כיוונית
       // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
       workerInfo.password = "*******";
@@ -48,10 +48,28 @@ exports.userCtrl = {
       res.status(500).json({ msg: "err", err })
     }
   },
-   userList: async (req, res) => {
+  userList: async (req, res) => {
     try {
       let data = await UserModel.find({}, { password: 0 });
       res.json(data)
+    }
+    catch (err) {
+      console.log(err)
+      res.status(500).json({ msg: "err", err })
+    }
+  },
+  editWorkerJob: async (req, res) => {
+    if (!req.body.worker) {
+      return res.status(400).json({ msg: "Need to send role in body" });
+    }
+    try {
+      let editId = req.params.editId;
+      // if (editId == "636a21fb08ceefdb79d7ea62" || editId == "636a5789fcf2f9da509ae586") {
+      //   return res.status(401).json({ msg: "You cant change superadmin to user" });
+      // }
+      let userInfo = await UserModel.updateOne({ _id: editId }, { worker: { jobs: req.body.worker.jobs } });
+
+      res.json(userInfo);
     }
     catch (err) {
       console.log(err)
@@ -62,7 +80,7 @@ exports.userCtrl = {
     try {
       let delId = req.params.delId;
       let userInfo;
-    
+
 
       if (req.tokenData.role == "admin") {
         userInfo = await UserModel.deleteOne({ _id: delId }, { password: 0 });
