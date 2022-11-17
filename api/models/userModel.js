@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 let userSchema = new mongoose.Schema({
   fullName: {
-    firstName: String,
-    lastName: String
+    firstName:{type: String, default: ""},
+    lastName:{type: String, default: ""}
   },
-  email: String,
-  phone: String,
-  password: String,
+  email:{type: String, default: ""},
+  phone:{type: String, default: ""},
+  password:{type: String, default: ""},
   date_created: {
     type: Date, default: Date.now()
   },
@@ -20,7 +20,7 @@ let userSchema = new mongoose.Schema({
   active: { type: Boolean, default: true },
 
   worker: {
-    pin: Number,
+    pin: {type: Number, default:null},
     jobs: [{ type: String }],
     restaurantID: [mongoose.ObjectId],
 
@@ -31,7 +31,7 @@ let userSchema = new mongoose.Schema({
       country:{type: String, default: ""} ,
       city:{type: String, default: ""} ,
       Street: {type: String, default: ""},
-      num: Number
+      num: {type: Number, default:null}
   },
     ordersaArr: [mongoose.ObjectId]
   }

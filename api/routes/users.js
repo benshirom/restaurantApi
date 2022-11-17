@@ -20,7 +20,6 @@ router.delete("/:delId", auth, userCtrl.deleteUser)
 
 router.get("/verify/:userId/:uniqueString",authCtrl.verifyUser)
 router.get("/verified",authCtrl.verifiedUser)
-// router.delete("/:delId", auth, userCtrl.deleteUser)
 
 
 

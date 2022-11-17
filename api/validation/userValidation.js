@@ -1,3 +1,4 @@
+const { allow } = require("joi");
 const Joi = require("joi");
 
 exports.validSignUpUser = (_reqBody) => {
@@ -33,7 +34,7 @@ exports.validSignUpManager = (_reqBody) => {
     password: Joi.string().min(6).max(99).required(),
     worker: {
       jobs: Joi.array().required(),
-      pin: Joi.number().min(4).max(4).required()
+      pin: Joi.string().min(4).max(4).required()
     }
 
   })
@@ -43,8 +44,18 @@ exports.validSignUpManager = (_reqBody) => {
 
 exports.validSignUpWorker = (_reqBody) => {
   let joiSchema = Joi.object({
+    fullName: {
+      firstName: Joi.string().min(2).max(50).allow(""),
+      lastName: Joi.string().min(2).max(50).allow("")
+    },
     email: Joi.string().min(2).max(99).email().required(),
-    worker: { jobs: Joi.array().required() }
+    worker: {
+      jobs: Joi.array().required(),
+      pin: Joi.string().min(4).max(4).allow("")
+    },
+    phone: Joi.string().min(10).max(12).pattern(/^[0-9]+$/).allow(""),
+    password: Joi.string().min(6).max(99).allow(""),
+
   })
 
   return joiSchema.validate(_reqBody);
@@ -57,7 +68,7 @@ exports.validWorkerFillDetails = (_reqBody) => {
     },
     phone: Joi.string().min(10).max(12).pattern(/^[0-9]+$/).required(),
     password: Joi.string().min(6).max(99).required(),
-    worker: { pin: Joi.number().min(4).max(4).required() }
+    worker: { pin: Joi.string().min(4).max(4).required() }
 
   })
 

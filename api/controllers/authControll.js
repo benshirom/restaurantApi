@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const { UserModel } = require("../models/userModel");
 const { UserVerificationModel } = require("../models/userVerificationModel");
 const { config } = require("../config/secret");
-const { validUser  ,validLogin,validSignUpWorker,validSignUpManager} = require("../validation/userValidation");
+const { validSignUpUser ,validLogin,validSignUpWorker,validSignUpManager} = require("../validation/userValidation");
 const { createToken,mailOptions } = require("../helpers/userHelper");
 const salRounds = 10;
 
@@ -76,20 +76,17 @@ const sendVerificationEmail = async ({ _id, email }, res) => {
 };
 exports.authCtrl = {
     signUp:async(req,res) => {
-        let validBody = validUser(req.body);
-        // במידה ויש טעות בריק באדי שהגיע מצד לקוח
-        // יווצר מאפיין בשם אירור ונחזיר את הפירוט של הטעות
+        let validBody = validSignUpUser(req.body);
+       
         if(validBody.error){
           return res.status(400).json(validBody.error.details);
         }
         try{
           let user = new UserModel(req.body);
-          // נרצה להצפין את הסיסמא בצורה חד כיוונית
-          // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
           user.password = await bcrypt.hash(user.password, salRounds);
-      
           await user.save();
           user.password = "***";
+          sendVerificationEmail(user, res);
           res.status(201).json(user);
         }
         catch(err){
@@ -102,6 +99,7 @@ exports.authCtrl = {
         }
       },
       signUpManager: async (req, res) => {
+        req.body.worker.jobs=["manager"];
         let validBody = validSignUpManager(req.body);
         // במידה ויש טעות בריק באדי שהגיע מצד לקוח
         // יווצר מאפיין בשם אירור ונחזיר את הפירוט של הטעות
@@ -113,9 +111,10 @@ exports.authCtrl = {
           // נרצה להצפין את הסיסמא בצורה חד כיוונית
           // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
           user.password = await bcrypt.hash(user.password, salRounds);
-      
           await user.save();
           user.password = "***";
+          sendVerificationEmail(user, res);
+
           res.status(201).json(user);
         }
         catch(err){
@@ -136,6 +135,9 @@ exports.authCtrl = {
         }
         try{
           let user = new UserModel(req.body);
+          await user.save()
+          sendVerificationEmail(user, res);
+
           // נרצה להצפין את הסיסמא בצורה חד כיוונית
           // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
           res.status(201).json(user);

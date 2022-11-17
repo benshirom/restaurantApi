@@ -1,4 +1,6 @@
 const { UserModel } = require("../models/userModel");
+const { validWorkerFillDetails} = require("../validation/userValidation");
+const bcrypt = require("bcrypt");
 
 
 exports.userCtrl = {
@@ -15,6 +17,7 @@ exports.userCtrl = {
   },
   WorkerFillDetails: async (req, res) => {
     let validBody = validWorkerFillDetails(req.body);
+
     // במידה ויש טעות בריק באדי שהגיע מצד לקוח
     // יווצר מאפיין בשם אירור ונחזיר את הפירוט של הטעות
     if (validBody.error) {
@@ -23,20 +26,11 @@ exports.userCtrl = {
     try {
       let workerId = req.params.workerId;
       let hashPass = await bcrypt.hash(req.body.password, 10);
-      let workerInfo = UserModel.updateOne({ _id: workerId }, {
-        role: req.body.role,
-        fullName: {
-          firstName: req.body.fullName.firstName,
-          lastName: req.body.fullName.lastName
-        },
-        phone: req.body.phone,
-        password: hashPass,
-        worker: { pin: req.body.worker.pin }
-      })
+      req.body.password=hashPass;
+      let workerInfo = await UserModel.findOneAndUpdate({ _id: workerId }, req.body)
       // נרצה להצפין את הסיסמא בצורה חד כיוונית
       // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
       workerInfo.password = "*******";
-
       res.status(201).json(workerInfo);
     }
     catch (err) {
