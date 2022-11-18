@@ -17,10 +17,10 @@ router.post("/login", authCtrl.login)
 router.patch("/changeJob/:editId", authManager, userCtrl.editWorkerJob)
 router.delete("/:delId", auth, userCtrl.deleteUser)
 
-router.get("/usersList", authAdmin ,userCtrl.userList)
 router.get("/verify/:userId/:uniqueString",authCtrl.verifyUser)
 router.get("/verified",authCtrl.verifiedUser)
 
+router.get("/usersList", authAdmin ,userCtrl.userList)
 
 
 module.exports = router;
