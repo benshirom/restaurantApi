@@ -1,5 +1,5 @@
 const { UserModel } = require("../models/userModel");
-const { validWorkerFillDetails} = require("../validation/userValidation");
+const { validWorkerFillDetails } = require("../validation/userValidation");
 const bcrypt = require("bcrypt");
 
 
@@ -16,6 +16,7 @@ exports.userCtrl = {
     }
   },
   WorkerFillDetails: async (req, res) => {
+    console.log(req.body)
     let validBody = validWorkerFillDetails(req.body);
 
     // במידה ויש טעות בריק באדי שהגיע מצד לקוח
@@ -26,12 +27,16 @@ exports.userCtrl = {
     try {
       let workerId = req.params.workerId;
       let hashPass = await bcrypt.hash(req.body.password, 10);
-      req.body.password=hashPass;
-      let workerInfo = await UserModel.findOneAndUpdate({ _id: workerId }, req.body)
-      // נרצה להצפין את הסיסמא בצורה חד כיוונית
-      // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
-      workerInfo.password = "*******";
-      res.status(201).json(workerInfo);
+      let workerInfo = await UserModel.findOne({ _id: workerId })
+      workerInfo.worker.pin = req.body.worker.pin
+      workerInfo.phone = req.body.phone
+      workerInfo.password = hashPass
+      workerInfo.fullName = req.body.fullName
+      let workerUpdate = await UserModel.updateOne({ _id: workerId }, workerInfo)
+
+      workerUpdate.password = "*******";
+      console.log(workerUpdate);
+      res.status(201).json(workerUpdate);
     }
     catch (err) {
       if (err.code == 11000) {
@@ -53,17 +58,17 @@ exports.userCtrl = {
     }
   },
   editWorkerJob: async (req, res) => {
-    if (!req.body.worker) {
-      return res.status(400).json({ msg: "Need to send role in body" });
+    if (!req.body.job) {
+      return res.status(400).json({ msg: "Need to send job in body" });
     }
     try {
       let editId = req.params.editId;
-      // if (editId == "636a21fb08ceefdb79d7ea62" || editId == "636a5789fcf2f9da509ae586") {
-      //   return res.status(401).json({ msg: "You cant change superadmin to user" });
-      // }
-      let userInfo = await UserModel.updateOne({ _id: editId }, { worker: { jobs: req.body.worker.jobs } });
-
-      res.json(userInfo);
+    
+      let userInfo = await UserModel.findOne({ _id: editId });
+      userInfo.worker.jobs.push(req.body.job)
+      let userUpdate = await UserModel.updateOne({ _id: editId }, userInfo)
+      console.log(userUpdate)
+      res.json(userUpdate);
     }
     catch (err) {
       console.log(err)
@@ -75,13 +80,20 @@ exports.userCtrl = {
       let delId = req.params.delId;
       let userInfo;
 
-
+      console.log(delId);
+      console.log(req.tokenData.role);
       if (req.tokenData.role == "admin") {
         userInfo = await UserModel.deleteOne({ _id: delId }, { password: 0 });
       }
       else if (req.tokenData._id == delId) {
         userInfo = await UserModel.deleteOne({ _id: req.tokenData._id }, { password: 0 });
       }
+      req.tokenData.jobs.forEach(async job => {
+        if (job == "manager") {
+          userInfo = await UserModel.deleteOne({ _id: delId }, { password: 0 });
+        }
+
+      });
       res.json(userInfo);
     }
     catch (err) {

@@ -164,6 +164,8 @@ exports.authCtrl = {
           let user = await UserModel.findOne({email:req.body.email})
           if(!user){
             return res.status(401).json({msg:"Password or email is worng ,code:1"})
+          } else if (!user.verified) {
+            return res.status(401).json({ status: "failed", msg: "Email hasnt been verified yet. check your inbox. " });
           }
           // אם הסיסמא שנשלחה בבאדי מתאימה לסיסמא המוצפנת במסד של אותו משתמש
           let authPassword = await bcrypt.compare(req.body.password,user.password);
