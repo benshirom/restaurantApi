@@ -9,6 +9,10 @@ const router = express.Router();
 
 
 
+router.post("/create" ,authManager,RestaurantCtrl.createRestaurant)
+router.get("/verify/:restaId/:uniqueString" ,RestaurantCtrl.verifyRestaurant)
+router.get("/verified",RestaurantCtrl.verifiedRestaurant)
+
 // router.get("/" ,authWorker,RestaurantCtrl.getRestaurant)
 // router.put("/:editId", authManager,RestaurantCtrl.editrestaurant)
 // router.get("/shifts" ,authWorker,RestaurantCtrl.shifts)
@@ -28,7 +32,7 @@ const router = express.Router();
 // router.post("/orders/payOrder" ,auth,OrderCtrl.payOnOrder)
 // router.post("/orders/discount/:orderId" ,authManager,OrderCtrl.discountOnOrder)
 
-// router.get("/Menu" ,MenuCtrl.getMenu)
+router.get("/menu/:restId" ,MenuCtrl.getMenu)
 // router.post("/Menu", authManager, MenuCtrl.addItemMenu)
 // router.delete("Menu/:delItemId", authManager, MenuCtrl.deleteItemMenu)
 // router.put("Menu/:editItemId", authManager,MenuCtrl.editItemMenu)
