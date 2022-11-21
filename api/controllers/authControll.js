@@ -3,7 +3,7 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { UserModel } = require("../models/userModel");
 const { UserVerificationModel } = require("../models/userVerificationModel");
-const { config} = require("../config/secret");
+const { config } = require("../config/secret");
 const { validSignUpUser, validLogin, validSignUpWorker, validSignUpManager } = require("../validation/userValidation");
 const { createToken, mailOptions, transporter } = require("../helpers/userHelper");
 
@@ -146,7 +146,7 @@ exports.authCtrl = {
         token: token,
         userRole: user.role,
         id: user._id,
-        jobs:user.worker.jobs
+        jobs: user.worker.jobs
       }
       res.json(data);
     }
