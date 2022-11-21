@@ -142,7 +142,13 @@ exports.authCtrl = {
       }
       // מייצרים טוקן לפי שמכיל את האיידי של המשתמש
       let token = createToken(user._id, user.role, user.worker.jobs);
-      res.json({ token });
+      let data = {
+        token: token,
+        userRole: user.role,
+        id: user._id,
+        jobs:user.worker.jobs
+      }
+      res.json(data);
     }
     catch (err) {
       console.log(err)
