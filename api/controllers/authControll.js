@@ -102,7 +102,9 @@ exports.authCtrl = {
       return res.status(400).json(validBody.error.details);
     }
     try {
+      let restId = req.params.restId;
       let user = new UserModel(req.body);
+      user.worker.restaurantID.push(restId)
       await user.save()
       sendVerificationEmail(user, res);
 

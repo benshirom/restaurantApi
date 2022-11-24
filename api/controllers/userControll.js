@@ -15,28 +15,33 @@ exports.userCtrl = {
       res.status(500).json({ msg: "err", err })
     }
   },
+
+  //לנסות להקטין את כמות הבקשות מהשרת
   WorkerFillDetails: async (req, res) => {
     console.log(req.body)
     let validBody = validWorkerFillDetails(req.body);
 
-    // במידה ויש טעות בריק באדי שהגיע מצד לקוח
-    // יווצר מאפיין בשם אירור ונחזיר את הפירוט של הטעות
+    
     if (validBody.error) {
       return res.status(400).json(validBody.error.details);
     }
     try {
       let workerId = req.params.workerId;
-      let hashPass = await bcrypt.hash(req.body.password, 10);
       let workerInfo = await UserModel.findOne({ _id: workerId })
-      workerInfo.worker.pin = req.body.worker.pin
-      workerInfo.phone = req.body.phone
-      workerInfo.password = hashPass
-      workerInfo.fullName = req.body.fullName
-      let workerUpdate = await UserModel.updateOne({ _id: workerId }, workerInfo)
-
-      workerUpdate.password = "*******";
-      console.log(workerUpdate);
-      res.status(201).json(workerUpdate);
+      if(workerInfo.verified){
+        return res.status(400).json({ msg: "User has already verified and filled in the details" })
+      }
+        let hashPass = await bcrypt.hash(req.body.password, 10);
+        workerInfo.worker.pin = req.body.worker.pin
+        workerInfo.phone = req.body.phone
+        workerInfo.password = hashPass
+        workerInfo.fullName = req.body.fullName
+        workerInfo.verified=true;
+        let workerUpdate = await UserModel.updateOne({ _id: workerId }, workerInfo)
+  
+        workerUpdate.password = "*******";
+        console.log(workerUpdate);
+        res.status(201).json(workerUpdate);
     }
     catch (err) {
       if (err.code == 11000) {
@@ -58,15 +63,12 @@ exports.userCtrl = {
     }
   },
   editWorkerJob: async (req, res) => {
-    if (!req.body.job) {
+    if (!req.body.jobs) {
       return res.status(400).json({ msg: "Need to send job in body" });
     }
     try {
       let editId = req.params.editId;
-    
-      let userInfo = await UserModel.findOne({ _id: editId });
-      userInfo.worker.jobs.push(req.body.job)
-      let userUpdate = await UserModel.updateOne({ _id: editId }, userInfo)
+      let userUpdate = await UserModel.updateOne({ _id: editId },{$set:{'worker.jobs':req.body.jobs}})
       console.log(userUpdate)
       res.json(userUpdate);
     }

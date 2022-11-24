@@ -10,7 +10,7 @@ router.get("/myInfo",auth,userCtrl.myInfo)
 // כל המשתמשים
 router.post("/",authCtrl.signUp)
 router.post("/manager",authCtrl.signUpManager)
-router.post("/worker",authCtrl.signUpWorker)
+router.post("/worker/:restId",authManager,authCtrl.signUpWorker)
 router.patch("/worker/:workerId",userCtrl.WorkerFillDetails)
 router.post("/login", authCtrl.login)
 
