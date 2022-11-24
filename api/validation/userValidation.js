@@ -74,3 +74,22 @@ exports.validWorkerFillDetails = (_reqBody) => {
 
   return joiSchema.validate(_reqBody);
 }
+exports.validUserEdit = (_reqBody) => {
+  let joiSchema = Joi.object({
+    fullName: {
+      firstName: Joi.string().min(2).max(50).required(),
+      lastName: Joi.string().min(2).max(50).required()
+    },
+    phone: Joi.string().min(10).max(12).pattern(/^[0-9]+$/).required(),
+    worker: { pin: Joi.string().min(4).max(4).required() },
+    address: {
+      country: Joi.string().min(2).max(50).allow(null,""),
+      city: Joi.string().min(2).max(50).allow(null,""),
+      Street: Joi.string().min(2).max(50).allow(null,""),
+      num: Joi.number().min(2).max(50).allow(null,"")
+    },
+
+  })
+
+  return joiSchema.validate(_reqBody);
+}

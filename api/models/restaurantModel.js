@@ -5,13 +5,13 @@ let restaurantSchema = new mongoose.Schema({
     email: String,
     phone: String,
     info:String,
-    creatorID: mongoose.ObjectId,
     address: {
         country:{type: String, default: ""} ,
         city:{type: String, default: ""} ,
         Street: {type: String, default: ""},
         num: Number
     },
+    creatorID: mongoose.ObjectId,
     date_created: {
         type: Date, default: Date.now()
     },

@@ -26,7 +26,7 @@ exports.transporter=()=>{
       console.log(error);
       console.log(config.authEmail);
       console.log(config.authPass);
-    } else {
+    } else if (success) {
       console.log("ready for messages");
       console.log("success");
     }
