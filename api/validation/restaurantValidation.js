@@ -16,3 +16,19 @@ exports.validateRestaurant = (_reqBody) =>{
     })
     return schemaJoi.validate(_reqBody);
 }
+
+
+exports.validateEditRestaurant = (_reqBody) =>{
+    let schemaJoi = Joi.object({
+        name: Joi.string().min(2).max(99).required(),
+        phone: Joi.string().min(10).max(12).pattern(/^[0-9]+$/).required(),
+        info: Joi.string().min(3).max(500).required(),
+        address:{
+            country: Joi.string().min(2).max(99).required() ,
+            city: Joi.string().min(2).max(99).required(),
+            Street: Joi.string().min(2).max(99).required(),
+            num: Joi.number().required()
+        },
+    })
+    return schemaJoi.validate(_reqBody);
+}
