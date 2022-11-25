@@ -14,7 +14,7 @@ router.get("/verify/:restaId/:uniqueString", RestaurantCtrl.verifyRestaurant)
 router.get("/verified", RestaurantCtrl.verifiedRestaurant)
 
 router.get("/byId/:resId", authWorker, RestaurantCtrl.getRestaurant)
-router.get("/myrestaurants/:userID", authManager, RestaurantCtrl.getMyRestaurants)
+router.get("/myrestaurants", authManager, RestaurantCtrl.getMyRestaurants)
 router.get("/myworks", authWorker, RestaurantCtrl.getMyWorkPlaces)
 router.put("/editRest/:editId", authManager, RestaurantCtrl.editRestaurant)
 
