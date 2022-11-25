@@ -148,8 +148,8 @@ exports.RestaurantCtrl = {
   },
   getMyRestaurants: async (req, res) => {
     try {
-
-      let data = await RestaurantModel.find({ creatorID: req.tokenData._id });
+      const { userID } = req.params;
+      let data = await RestaurantModel.find({ creatorID: userID });
       res.json(data);
     }
     catch (err) {
