@@ -8,8 +8,8 @@ exports.MenuCtrl = {
     getMenu: async (req, res) => {
         let { restId } = req.params
         try {
-            let restaurant = await RestaurantModel.findOne({ _id: restId }).populate('menu');
-
+            
+            let restaurant = await RestaurantModel.findOne({ _id: restId }).populate({path: 'menu',model: 'itemmenus'});
             res.json(restaurant.menu)
         } catch (err) {
             console.log(err);
@@ -72,8 +72,8 @@ exports.MenuCtrl = {
         let { delItemId } = req.params
         try {
             console.log(delItemId)
-            let itenDel = await itemMenuModel.deleteOne({ _id: delItemId })
-            res.json(itenDel)
+            let itemDel = await itemMenuModel.deleteOne({ _id: delItemId })
+            res.json(itemDel)
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })
@@ -88,8 +88,8 @@ exports.MenuCtrl = {
         let { editItemId } = req.params
         try {
             console.log(req.body)
-            let itenEdit = await itemMenuModel.updateOne({ _id: editItemId },req.body)
-            res.json(itenEdit)
+            let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },req.body)
+            res.json(itemEdit)
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })
@@ -103,14 +103,14 @@ exports.MenuCtrl = {
         let { editItemId } = req.params
         try {
             console.log(req.body)
-            let itenEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.name':req.body.category.name}})
-            res.json(itenEdit)
+            let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.name':req.body.category.name}})
+            res.json(itemEdit)
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })
         }
     },
-    editSubategoryItemMenu: async (req, res) => {
+    editSubcategoryItemMenu: async (req, res) => {
         
         if (!req.body.category.subcategory) {
           return res.status(400).json({ msg: "Need to send subcategory" });
@@ -118,8 +118,8 @@ exports.MenuCtrl = {
         let { editItemId } = req.params
         try {
             console.log(req.body)
-            let itenEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.subcategory':req.body.category.subcategory}})
-            res.json(itenEdit)
+            let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.subcategory':req.body.category.subcategory}})
+            res.json(itemEdit)
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })

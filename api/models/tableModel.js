@@ -4,10 +4,12 @@ let tableSchema = new mongoose.Schema({
     //order id
     tableOwenr: mongoose.ObjectId||null, 
     seats:Number,
+    isCatched:{type:Boolean,default:false},
     status:String,
     location:{
         x:Number,
         y:Number
-    }  
+    }  ,
+    tableNumber:Number
 })
-exports.tableModel = mongoose.model("tables", tableSchema);
+exports.TableModel = mongoose.model("tables", tableSchema);
