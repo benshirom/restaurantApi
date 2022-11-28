@@ -6,7 +6,7 @@ const router = express.Router();
 
 // אזור שמחזיר למשתמש את הפרטים שלו לפי הטוקן שהוא שולח
 router.get("/myInfo",auth,userCtrl.myInfo)
-router.get("/myInfo/:userId",authManager,userCtrl.userInfo)
+router.get("/userInfo/:userId",authManager,userCtrl.userInfo)
 // רק משתמש אדמין יוכל להגיע ולהציג את רשימת 
 // כל המשתמשים
 router.post("/",authCtrl.signUp)
