@@ -62,10 +62,10 @@ exports.TableCtrl={
         let validBody = validateEditTable(req.body);
 
         if (validBody.error) return res.status(400).json(validBody.error.details);
-        let { tableId } = req.params
+        let { editTableId } = req.params
         try {
             console.log(req.body)
-            let EditTable = await TableModel.updateOne({ _id: tableId },req.body)
+            let EditTable = await TableModel.updateOne({ _id: editTableId },req.body)
             res.json(EditTable)
         }catch(err){
             console.log(err);
