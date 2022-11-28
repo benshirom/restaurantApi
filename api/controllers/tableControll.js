@@ -73,8 +73,8 @@ exports.TableCtrl={
         }
     },
     editIsCatched: async (req, res) => {
-        if (!req.body.IsCatched) {
-            return res.status(400).json({ msg: "Need to send IsCatched" });
+        if (!req.body.isCatched) {
+            return res.status(400).json({ msg: "Need to send isCatched" });
           }
           let { editTableId } = req.params
           try {
