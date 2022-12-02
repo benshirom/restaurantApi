@@ -1,7 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const { UserVerificationModel } = require("../models/userVerificationModel");
-const { config } = require("../config/secret");
 
 const jwt = require("jsonwebtoken");
 const { config } = require("../config/secret")
