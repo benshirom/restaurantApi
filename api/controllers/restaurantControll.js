@@ -2,10 +2,10 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const {  sendVerificationEmail } = require("../helpers/userHelper");
-const { config } = require("../config/secret");
+// const { config } = require("../config/secret");
 const { RestaurantModel } = require("../models/restaurantModel");
 const { validateRestaurant, validateEditRestaurant } = require("../validation/restaurantValidation");
-const { restaurantVerificationModel } = require("../models/restaurantVerificationModel");
+// const { restaurantVerificationModel } = require("../models/restaurantVerificationModel");
 const { UserModel } = require("../models/userModel");
 
 
