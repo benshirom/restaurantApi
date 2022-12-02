@@ -25,10 +25,10 @@ router.put("/editRest/:editId", authManager, RestaurantCtrl.editRestaurant)
 
 router.get("/orders" ,authWorker,OrderCtrl.getOrders)
 router.post("/orders/:resId" ,authWorker,OrderCtrl.addOrderByWorker)
-router.post("/orders" ,auth,OrderCtrl.addOrderByCustomer) 
-router.post("/orders" ,auth,OrderCtrl.addOrderDeliveryOrTA) 
+router.post("/orders/:custumerID" ,auth,OrderCtrl.addOrderDeliveryOrTA) 
 // router.post("/orders/payOrder" ,auth,OrderCtrl.payOnOrder)
 // router.post("/orders/discount/:orderId" ,authManager,OrderCtrl.discountOnOrder)
+// router.post("/orders" ,auth,OrderCtrl.addOrderByCustomer) 
 
 
 // router.get("/tables" ,authWorker,TableCtrl.getTables) 

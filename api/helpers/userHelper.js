@@ -36,7 +36,7 @@ exports.createToken = (_id, role, jobs) => {
   let token = jwt.sign({ _id, role, jobs }, config.tokenSecret, { expiresIn: "1440mins" });
   return token;
 }
-
+//user and manager
 exports.mailOptions = (_id, _uniqueString, _email) => {
   const mailOptions = {
     from: config.authEmail,
@@ -47,6 +47,7 @@ exports.mailOptions = (_id, _uniqueString, _email) => {
 
   return mailOptions;
 }
+//restaurant
 exports.mailOptions2 = (_id, _uniqueString, _email) => {
   const mailOptions = {
     from: config.authEmail,
@@ -57,12 +58,35 @@ exports.mailOptions2 = (_id, _uniqueString, _email) => {
 
   return mailOptions;
 }
+//worker
+exports.mailOptions3 = (_id, _uniqueString, _email) => {
+  const mailOptions = {
+    from: config.authEmail,
+    to: _email,
+    subject: "workerrr",
+    //צריך לשלוח לURL הנכון של הפרונט כדי למלא את הפרטים
+    html: `<p>Verify Your Email restaurant </p><p> click <a href=${config.currentUrl + "/restaurants/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
+  };
 
-exports.sendVerificationEmail = async ({ _id, email }, res) => {
+  return mailOptions;
+}
+
+exports.sendVerificationEmail = async (userType,{ _id, email }, res) => {
   console.log("email " + email)
   console.log("id " + _id)
   const uniqueString = uuidv4() + _id;
-  let mail = mailOptions(_id, uniqueString, email);
+  let mail
+  if(userType=="manager"){
+    mail = mailOptions(_id, uniqueString, email);
+  }else if(userType=="user"){
+    mail = mailOptions(_id, uniqueString, email);
+  }else if(userType=="restaurant"){
+    mail = mailOptions2(_id, uniqueString, email);
+  }
+  else if(userType=="worker"){
+    mail = mailOptions3(_id, uniqueString, email);
+  }
+  
  let hasheduniqueString=  await bcrypt.hash(uniqueString, config.salRounds)
     .then((hasheduniqueString) => {
       const UserVerification = new UserVerificationModel({

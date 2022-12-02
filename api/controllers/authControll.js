@@ -22,7 +22,7 @@ exports.authCtrl = {
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
       user.password = "******";
-      sendVerificationEmail(user, res);
+      sendVerificationEmail("user",user, res);
       res.status(201).json(user);
     }
     catch (err) {
@@ -46,7 +46,7 @@ exports.authCtrl = {
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
       user.password = "***";
-      await sendVerificationEmail(user, res);
+      await sendVerificationEmail("manager",user, res);
 
       res.status(201).json(user);
     }
@@ -71,7 +71,7 @@ exports.authCtrl = {
       let user = new UserModel(req.body);
       user.worker.restaurantID.push(restId)
       await user.save()
-      sendVerificationEmail(user, res);
+      sendVerificationEmail("worker",user, res);
 
       // נרצה להצפין את הסיסמא בצורה חד כיוונית
       // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
