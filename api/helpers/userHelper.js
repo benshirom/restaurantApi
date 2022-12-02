@@ -1,17 +1,15 @@
-// 
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
+const { UserVerificationModel } = require("../models/userVerificationModel");
+const { config } = require("../config/secret");
 
 const jwt = require("jsonwebtoken");
 const { config } = require("../config/secret")
 const nodemailer = require("nodemailer");
 
-exports.createToken = (_id, role, jobs) => {
-  let token = jwt.sign({ _id, role, jobs }, config.tokenSecret, { expiresIn: "1440mins" });
-  return token;
-}
-
-exports.transporter=()=>{
+const transporter=()=>{
   let transporter = nodemailer.createTransport({
-
+    
     host: 'smtp.gmail.com',
     port: 465,
     secure: true, // use SSL
@@ -20,7 +18,7 @@ exports.transporter=()=>{
       pass: config.authPass
     }
   });
-
+  
   transporter.verify((error, success) => {
     if (error) {
       console.log(error);
@@ -30,9 +28,13 @@ exports.transporter=()=>{
       console.log("ready for messages");
       console.log("success");
     }
-  
+    
   })
   return transporter;
+}
+exports.createToken = (_id, role, jobs) => {
+  let token = jwt.sign({ _id, role, jobs }, config.tokenSecret, { expiresIn: "1440mins" });
+  return token;
 }
 
 exports.mailOptions = (_id, _uniqueString, _email) => {
@@ -55,3 +57,38 @@ exports.mailOptions2 = (_id, _uniqueString, _email) => {
 
   return mailOptions;
 }
+
+exports.sendVerificationEmail = async ({ _id, email }, res) => {
+  console.log("email " + email)
+  console.log("id " + _id)
+  const uniqueString = uuidv4() + _id;
+  let mail = mailOptions(_id, uniqueString, email);
+ let hasheduniqueString=  await bcrypt.hash(uniqueString, config.salRounds)
+    .then((hasheduniqueString) => {
+      const UserVerification = new UserVerificationModel({
+        userId: _id,
+        uniqueString: hasheduniqueString,
+      });
+      UserVerification
+        .save()
+        .then(() => {
+          transporter().sendMail(mail, (err, info) => {
+            if (err) console.log(err);
+            console.log('Message sent: %s', info.response);
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            status: "failed",
+            message: "an error  cant save",
+          });
+        })
+    })
+    .catch(() => {
+      res.json({
+        status: "failed",
+        message: "an error occurre",
+      });
+    })
+};

@@ -18,67 +18,42 @@ exports.MenuCtrl = {
     },
     createItemMenu: async (req, res) => {
         let validBody = validateItemMenu(req.body);
+        let {restId } = req.params
 
         if (validBody.error) return res.status(400).json(validBody.error.details);
         // let {workId}= req.params
         try {
-            let itemMenu = new itemMenuModel(req.body);
+            let itemMenu = new  itemMenuModel(req.body);
             itemMenu.workerID = req.tokenData._id
-            itemMenu.save();
+           await itemMenu.save();
 
-
+            let rest = await RestaurantModel.updateOne({ _id: restId }, { $push: { 'menu': itemMenu._id } })
+            
             res.json(itemMenu)
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })
         }
     },
-    addItemMenu: async (req, res) => {
-
-        let { itemId, restId } = req.params
-        try {
-            console.log(restId)
-
-            let rest = await RestaurantModel.updateOne({ _id: restId }, { $push: { 'menu': itemId } })
-
-            console.log(rest)
-
-            res.json(rest)
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({ msg: "there error try again later", err })
-        }
-    }
-    ,
+   
     removeItemMenu: async (req, res) => {
 
         let { itemId, restId } = req.params
         try {
-            console.log(restId)
+            // console.log(restId)
 
             let rest = await RestaurantModel.updateOne({ _id: restId }, { $pull: { 'menu': { $in: [itemId] } } })
+            let itemDel = await itemMenuModel.deleteOne({ _id: itemId })
 
-            console.log(rest)
+            // console.log(rest)
 
-            res.json(rest)
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({ msg: "there error try again later", err })
-        }
-    }
-    ,
-    deleteItemMenu: async (req, res) => {
-
-        let { delItemId } = req.params
-        try {
-            console.log(delItemId)
-            let itemDel = await itemMenuModel.deleteOne({ _id: delItemId })
             res.json(itemDel)
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })
         }
     }
+    
     ,
     editItemMenu: async (req, res) => {
         let validBody = validateEditItemMenu(req.body);

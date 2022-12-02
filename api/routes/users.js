@@ -14,7 +14,7 @@ router.post("/manager",authCtrl.signUpManager)
 router.post("/worker/:restId",authManager,authCtrl.signUpWorker)
 router.patch("/worker/:workerId",userCtrl.WorkerFillDetails)
 router.post("/login", authCtrl.login)
-
+//ערכיבה למנהל ועריכה לעובד 
 router.patch("/changeJob/:editId", authManager, userCtrl.editWorkerJob)
 router.put("/userEdit/:editId", auth, userCtrl.editUser)
 router.delete("/:delId", auth, userCtrl.deleteUser)

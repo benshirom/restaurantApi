@@ -1,47 +1,12 @@
 const bcrypt = require("bcrypt");
 const path = require("path");
-const { v4: uuidv4 } = require("uuid");
 const { UserModel } = require("../models/userModel");
 const { UserVerificationModel } = require("../models/userVerificationModel");
 const { config } = require("../config/secret");
 const { validSignUpUser, validLogin, validSignUpWorker, validSignUpManager } = require("../validation/userValidation");
-const { createToken, mailOptions, transporter } = require("../helpers/userHelper");
+const { createToken, mailOptions, transporter, sendVerificationEmail } = require("../helpers/userHelper");
 
-const sendVerificationEmail = async ({ _id, email }, res) => {
-  console.log("email " + email)
-  console.log("id " + _id)
-  const uniqueString = uuidv4() + _id;
-  let mail = mailOptions(_id, uniqueString, email);
-  await bcrypt
-    .hash(uniqueString, config.salRounds)
-    .then((hasheduniqueString) => {
-      const UserVerification = new UserVerificationModel({
-        userId: _id,
-        uniqueString: hasheduniqueString,
-      });
-      UserVerification
-        .save()
-        .then(() => {
-          transporter().sendMail(mail, (err, info) => {
-            if (err) console.log(err);
-            console.log('Message sent: %s', info.response);
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-          res.json({
-            status: "failed",
-            message: "an error  cant save",
-          });
-        })
-    })
-    .catch(() => {
-      res.json({
-        status: "failed",
-        message: "an error occurre",
-      });
-    })
-};
+
 exports.authCtrl = {
   signUp: async (req, res) => {
     let validBody = validSignUpUser(req.body);
@@ -51,12 +16,12 @@ exports.authCtrl = {
     }
     try {
       let user = new UserModel(req.body);
-      console.log(user)
-      console.log(config.salRounds)
+      // console.log(user)
+      // console.log(config.salRounds)
 
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
-      user.password = "***";
+      user.password = "******";
       sendVerificationEmail(user, res);
       res.status(201).json(user);
     }
@@ -81,7 +46,7 @@ exports.authCtrl = {
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
       user.password = "***";
-      sendVerificationEmail(user, res);
+      await sendVerificationEmail(user, res);
 
       res.status(201).json(user);
     }
@@ -160,64 +125,66 @@ exports.authCtrl = {
 
   verifyUser: async (req, res) => {
     let { userId, uniqueString } = req.params;
-    UserVerificationModel
-      .findOne({ userId })
-      .then((result) => {
-        console.log(result)
-        const hashedUniqueString = result.uniqueString;
-        if (result.expiresAt < Date.now()) {
-          UserVerificationModel
-            .deleteone({ userId })
-            .then(result => {
-              UserModel
-                .deleteone({ _id: userId })
-                .then(() => {
-                  let message = "link hsa expired.please sigh up again ";
-                  res.redirect(`/users/verified/?error=true&message=${message}`);
-                })
-                .catch((error) => {
-                  let message = "clearing user with expired unique string failed ";
-                  res.redirect(`/users/verified/?error=true&message=${message}`);
-                })
-            })
-            .catch((error) => {
-              console.log(error);
-              let message = "an error occurre while clearing  expired user verification record";
-              res.redirect(`/users/verified/?error=true&message=${message}`);
-            })
-        } else {
-          if (bcrypt.compare(uniqueString, hashedUniqueString)) {
-            UserModel.updateOne({ _id: userId }, { verified: true })
-              .then(() => {
-                UserVerificationModel
-                  .deleteOne({ userId })
-                  .then(() => {
-                    res.sendFile(path.join(__dirname, "./../views/verified.html"));
-                  })
-                  .catch(error => {
-                    console.log(error)
-                    let message = "an error occurre while finalizing sucssful verification  ";
-                    res.redirect(`/users/verified/?error=true&message=${message}`);
-                  })
-              })
-              .catch(error => {
-                console.log(error)
-                let message = "an error occurre while updating user verified ";
-                res.redirect(`/users/verified/?error=true&message=${message}`);
-              })
-          } else {
-            console.log(error)
-            let message = "an error occurre while compering unique strings ";
+    try {
+      let user = await UserVerificationModel.findOne({ _id: userId });
+
+      if (user) {
+        const hashedUniqueString = user.uniqueString;
+
+        if (user.expiresAt < Date.now()) {
+          try {
+
+            await UserVerificationModel.deleteone({ userId })
+            await UserModel.deleteone({ _id: userId })
+            let message = "link hsa expired.please sigh up again ";
+            res.redirect(`/users/verified/?error=true&message=${message}`);
+
+          }
+          catch (error) {
+            let message = "clearing user with expired unique string failed ";
             res.redirect(`/users/verified/?error=true&message=${message}`);
           }
         }
-      })
-      .catch((error) => {
-        console.log(error)
+        else {
+          let result = await bcrypt.compare(uniqueString, hashedUniqueString)
+
+          if (result) {
+            try {
+              let userUpdate = await UserModel.updateOne({ _id: userId }, { verified: true })
+              if (userUpdate) {
+                await UserVerificationModel.deleteOne({ userId })
+                res.sendFile(path.join(__dirname, "./../views/verified.html"));
+              }
+              else {
+                let message = "an error occurre while updating user verified ";
+                res.redirect(`/users/verified/?error=true&message=${message}`);
+              }
+            } catch (error) {
+              await UserVerificationModel.deleteone({ userId })
+              await UserModel.deleteone({ _id: userId })
+              let message = "an error occurre invalid verification details passed ";
+              res.redirect(`/users/verified/?error=true&message=${message}`);
+            }
+          }else{
+            await UserVerificationModel.deleteone({ userId })
+            await UserModel.deleteone({ _id: userId })
+            let message = "an error occurre  while compering details ";
+            res.redirect(`/users/verified/?error=true&message=${message}`);
+          }
+
+        }
+      }else{
         let message = "an error occurre while checking for existing user Verification record ";
-        res.redirect(`/users/verified/?error=true&message=${message}`);
-      })
-  },
+      res.redirect(`/users/verified/?error=true&message=${message}`);
+      }
+    } catch (error) {
+       await UserVerificationModel.deleteOne({ uniqueString })
+       await UserModel.deleteOne({ _id: userId })
+      let message ="an error occurre while checking for existing user Verification record ";
+      res.redirect(`/users/verified/?error=true&message=${message}`);
+    }
+    
+},
 
   verifiedUser: async (req, res) => {
     res.sendFile(path.join(__dirname, "../views/verified.html"))
