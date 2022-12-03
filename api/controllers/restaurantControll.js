@@ -1,49 +1,12 @@
 const bcrypt = require("bcrypt");
 const path = require("path");
-const { v4: uuidv4 } = require("uuid");
-const { mailOptions2, transporter } = require("../helpers/userHelper");
-const { config } = require("../config/secret");
+const { sendVerificationEmail } = require("../helpers/userHelper");
 const { RestaurantModel } = require("../models/restaurantModel");
 const { validateRestaurant, validateEditRestaurant } = require("../validation/restaurantValidation");
-const { restaurantVerificationModel } = require("../models/restaurantVerificationModel");
+const { VerificationModel } = require("../models/verificationModel");
 const { UserModel } = require("../models/userModel");
 
 
-const sendVerificationEmail = async ({ _id, email }, res) => {
-  console.log("email " + email)
-  console.log("id " + _id)
-  const uniqueString = uuidv4() + _id;
-  let mail = mailOptions2(_id, uniqueString, email);
-  await bcrypt
-    .hash(uniqueString, config.salRounds)
-    .then((hasheduniqueString) => {
-      const restaurantVerification = new restaurantVerificationModel({
-        restaurantId: _id,
-        uniqueString: hasheduniqueString,
-      });
-      restaurantVerification
-        .save()
-        .then(() => {
-          transporter().sendMail(mail, (err, info) => {
-            if (err) console.log(err);
-            console.log('Message sent: %s', info.response);
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-          res.json({
-            status: "failed",
-            message: "an error  cant save",
-          });
-        })
-    })
-    .catch(() => {
-      res.json({
-        status: "failed",
-        message: "an error occurre",
-      });
-    })
-};
 
 
 exports.RestaurantCtrl = {
@@ -56,7 +19,7 @@ exports.RestaurantCtrl = {
       let restaurant = new RestaurantModel(req.body)
       restaurant.creatorID = req.tokenData._id;
       await restaurant.save();
-      sendVerificationEmail(restaurant, res)
+      sendVerificationEmail("restaurant",restaurant, res)
 
       let userInfo = await UserModel.findOne({ _id: req.tokenData._id })
 
@@ -73,14 +36,14 @@ exports.RestaurantCtrl = {
   },
   verifyRestaurant: async (req, res) => {
     let { restaId, uniqueString } = req.params;
-    restaurantVerificationModel
-      .findOne({ restaId })
+    VerificationModel
+      .findOne({ id :restaId })
       .then((result) => {
         console.log(result)
         const hashedUniqueString = result.uniqueString;
         if (result.expiresAt < Date.now()) {
-          restaurantVerificationModel
-            .deleteone({ restaId })
+          VerificationModel
+            .deleteone({ id :restaId })
             .then(result => {
               RestaurantModel
                 .deleteone({ _id: restaId })
@@ -102,8 +65,8 @@ exports.RestaurantCtrl = {
           if (bcrypt.compare(uniqueString, hashedUniqueString)) {
             RestaurantModel.updateOne({ _id: restaId }, { verified: true })
               .then(() => {
-                restaurantVerificationModel
-                  .deleteOne({ restaId })
+                VerificationModel
+                  .deleteOne({ id :restaId })
                   .then(() => {
                     res.sendFile(path.join(__dirname, "./../views/verifiedReataurant.html"));
                   })
