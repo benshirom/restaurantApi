@@ -18,4 +18,4 @@ let itemMenuSchema = new mongoose.Schema({
         type: Date, default: Date.now()
     },
 })
-exports.itemMenuModel = mongoose.model("itemMenus", itemMenuSchema);
+exports.itemMenuModel = mongoose.model("itemmenus", itemMenuSchema);

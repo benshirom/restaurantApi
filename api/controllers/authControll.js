@@ -1,47 +1,13 @@
 const bcrypt = require("bcrypt");
 const path = require("path");
-const { v4: uuidv4 } = require("uuid");
 const { UserModel } = require("../models/userModel");
-const { UserVerificationModel } = require("../models/userVerificationModel");
+const { VerificationModel } = require("../models/verificationModel");
 const { config } = require("../config/secret");
 const { validSignUpUser, validLogin, validSignUpWorker, validSignUpManager } = require("../validation/userValidation");
-const { createToken, mailOptions, transporter } = require("../helpers/userHelper");
+const { createToken,sendVerificationEmail } = require("../helpers/userHelper");
 
-const sendVerificationEmail = async ({ _id, email }, res) => {
-  console.log("email " + email)
-  console.log("id " + _id)
-  const uniqueString = uuidv4() + _id;
-  let mail = mailOptions(_id, uniqueString, email);
-  await bcrypt
-    .hash(uniqueString, config.salRounds)
-    .then((hasheduniqueString) => {
-      const UserVerification = new UserVerificationModel({
-        userId: _id,
-        uniqueString: hasheduniqueString,
-      });
-      UserVerification
-        .save()
-        .then(() => {
-          transporter().sendMail(mail, (err, info) => {
-            if (err) console.log(err);
-            console.log('Message sent: %s', info.response);
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-          res.json({
-            status: "failed",
-            message: "an error  cant save",
-          });
-        })
-    })
-    .catch(() => {
-      res.json({
-        status: "failed",
-        message: "an error occurre",
-      });
-    })
-};
+
+
 exports.authCtrl = {
   signUp: async (req, res) => {
     let validBody = validSignUpUser(req.body);
@@ -57,7 +23,7 @@ exports.authCtrl = {
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
       user.password = "***";
-      sendVerificationEmail(user, res);
+      sendVerificationEmail("user",user, res);
       res.status(201).json(user);
     }
     catch (err) {
@@ -81,7 +47,7 @@ exports.authCtrl = {
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
       user.password = "***";
-      sendVerificationEmail(user, res);
+      sendVerificationEmail("manager",user, res);
 
       res.status(201).json(user);
     }
@@ -105,8 +71,9 @@ exports.authCtrl = {
       let restId = req.params.restId;
       let user = new UserModel(req.body);
       user.worker.restaurantID.push(restId)
+      console.log(user)
       await user.save()
-      sendVerificationEmail(user, res);
+      sendVerificationEmail("worker",user, res);
 
       // נרצה להצפין את הסיסמא בצורה חד כיוונית
       // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
@@ -160,14 +127,14 @@ exports.authCtrl = {
 
   verifyUser: async (req, res) => {
     let { userId, uniqueString } = req.params;
-    UserVerificationModel
-      .findOne({ userId })
+    VerificationModel
+      .findOne({ id :userId })
       .then((result) => {
         console.log(result)
         const hashedUniqueString = result.uniqueString;
         if (result.expiresAt < Date.now()) {
-          UserVerificationModel
-            .deleteone({ userId })
+          VerificationModel
+            .deleteone({ id :userId })
             .then(result => {
               UserModel
                 .deleteone({ _id: userId })
@@ -189,8 +156,8 @@ exports.authCtrl = {
           if (bcrypt.compare(uniqueString, hashedUniqueString)) {
             UserModel.updateOne({ _id: userId }, { verified: true })
               .then(() => {
-                UserVerificationModel
-                  .deleteOne({ userId })
+                VerificationModel
+                  .deleteOne({ id :userId })
                   .then(() => {
                     res.sendFile(path.join(__dirname, "./../views/verified.html"));
                   })
