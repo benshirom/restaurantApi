@@ -8,4 +8,5 @@ let VerificationSchema = new mongoose.Schema({
  
 })
 
+
 exports.VerificationModel = mongoose.model("verify", VerificationSchema);
