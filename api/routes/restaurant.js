@@ -23,12 +23,12 @@ router.put("/editRest/:editId", authManager, RestaurantCtrl.editRestaurant)
 // לדבר עם ירין על שלושתם
 
 
-// router.get("/orders" ,authWorker,OrderCtrl.getOrder)
-router.post("/orders/:tableId" ,authWorker,OrderCtrl.addOrderByWorker)
-router.post("/orders" ,auth,OrderCtrl.addOrderByCustomer) 
-router.post("/orders" ,auth,OrderCtrl.addOrderDeliveryOrTA) 
+router.get("/orders" ,authWorker,OrderCtrl.getOrders)
+router.post("/orders/:resId" ,authWorker,OrderCtrl.addOrderByWorker)
+router.post("/orders/:custumerID" ,auth,OrderCtrl.addOrderDeliveryOrTA) 
 // router.post("/orders/payOrder" ,auth,OrderCtrl.payOnOrder)
 // router.post("/orders/discount/:orderId" ,authManager,OrderCtrl.discountOnOrder)
+// router.post("/orders" ,auth,OrderCtrl.addOrderByCustomer) 
 
 
 // router.get("/tables" ,authWorker,TableCtrl.getTables) 
@@ -42,10 +42,8 @@ router.patch("/tables/location/:editTableId", authManager, TableCtrl.editLocatio
 router.patch("/tables/tableOwenr/:editTableId/:orderId", authManager, TableCtrl.editTableOwenr)
 
 router.get("/menu/:restId", MenuCtrl.getMenu)
-router.post("/menu/create", authManager, MenuCtrl.createItemMenu)
-router.patch("/menu/add/:restId/:itemId", authManager, MenuCtrl.addItemMenu)
+router.post("/menu/create/:restId", authManager, MenuCtrl.createItemMenu)
 router.patch("/menu/remove/:restId/:itemId", authManager, MenuCtrl.removeItemMenu)
-router.delete("/menu/delete/:delItemId", authManager, MenuCtrl.deleteItemMenu)
 router.patch("/menu/edit/:editItemId", authManager, MenuCtrl.editItemMenu)
 router.patch("/menu/editcategory/:editItemId", authManager, MenuCtrl.editCategoryItemMenu)
 router.patch("/menu/editsubcategory/:editItemId", authManager, MenuCtrl.editSubcategoryItemMenu)

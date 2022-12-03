@@ -10,9 +10,9 @@ let orderSchema = new mongoose.Schema({
     date_created: {
         type: Date, default: Date.now()
     },
-    
+    // need to add info for order and for orderItems
     byWorker: {
-        tableNumber: Number,
+        // tableNumber: Number,
         workerID: mongoose.ObjectId,
     },
     byCustumer:
