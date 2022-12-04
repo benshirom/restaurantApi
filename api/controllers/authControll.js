@@ -209,7 +209,7 @@ exports.authCtrl = {
             return res.json({ status: "failed", message: " account as been suspended" });
           }
           sendResetPasswordEmail("resetpassword", user, res);
-          res.json(user);
+          res.json("go to email");
 
         } else {
           return res.json({ status: "failed", message: "No account with the supplied email found. Please try again" });
