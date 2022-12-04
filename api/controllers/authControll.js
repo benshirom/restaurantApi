@@ -68,7 +68,7 @@ exports.authCtrl = {
       return res.status(400).json(validBody.error.details);
     }
     try {
-      let restId = req.params.restId;
+      let {restId} = req.params;
       let user = new UserModel(req.body);
       user.worker.restaurantID.push(restId)
       console.log(user)
