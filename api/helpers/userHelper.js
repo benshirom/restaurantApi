@@ -69,7 +69,7 @@ exports.createToken = (_id, role, jobs) => {
       subject: "Verify Your Email resetpassword",
             //צריך לשנות את הראוט לשינוי סיסמה
 
-      html: `<p>Verify Your Email_uniqueString :  ${_uniqueString}<br>  id : ${_id} </p><p> click <a href=${config.ReactUrl + "/resetPassword" + _id + "/" + _uniqueString}> here</a> </p>`
+      html: `<p>Verify Your Email_uniqueString :  ${_uniqueString}<br>  id : ${_id} </p><p> click <a href=${config.ReactUrl + "/resetPassword/" + _id + "/" + _uniqueString}> here</a> </p>`
     };
   
     return mailOptions;
