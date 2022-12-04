@@ -47,7 +47,7 @@ exports.createToken = (_id, role, jobs) => {
       to: _email,
       subject: "Verify Your Email worker",
       //צריך לשנות ראוט של מילוי פרטים
-      html: `<p>Verify Your Email worker </p><p> click <a href=${config.currentUrl + "/users/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
+      html: `<p>Verify Your Email worker </p><p> click <a href=${config.ReactUrl + "/fillDetales/" + _id }> here</a> </p>`
     };
   
     return mailOptions;
