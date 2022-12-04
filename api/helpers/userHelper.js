@@ -62,9 +62,62 @@ exports.createToken = (_id, role, jobs) => {
   
     return mailOptions;
   }
+  else if(emailType=="resetpassword"){
+    const mailOptions = {
+      from: config.authEmail,
+      to: _email,
+      subject: "Verify Your Email resetpassword",
+            //צריך לשנות את הראוט לשינוי סיסמה
+
+      html: `<p>Verify Your Email_uniqueString :  ${_uniqueString}<br>  id : ${_id} </p><p> click <a href=${config.currentUrl + "/restaurants/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
+    };
+  
+    return mailOptions;
+  }
   }
 
 exports.sendVerificationEmail = async (emailType,{ _id, email }, res) => {
+
+  // let request = await VerificationModel.findOne({id:_id})
+  // if(request) await VerificationModel.deleteOne({id:_id})  
+  console.log("email " + email)
+  console.log("id " + _id)
+  const uniqueString = uuidv4() + _id;
+  let mail = mailOptions(emailType,_id, uniqueString, email);
+  await bcrypt
+    .hash(uniqueString, config.salRounds)
+    .then((hasheduniqueString) => {
+      const Verification = new VerificationModel({
+        id: _id,
+        uniqueString: hasheduniqueString,
+      });
+      Verification
+        .save()
+        .then(() => {
+          transporter.sendMail(mail, (err, info) => {
+            if (err) console.log(err);
+            console.log('Message sent: %s', info.response);
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            status: "failed",
+            message: "an error  cant save",
+          });
+        })
+    })
+    .catch(() => {
+      res.json({
+        status: "failed",
+        message: "an error occurre",
+      });
+    })
+};
+exports.sendResetPasswordEmail = async (emailType,{ _id, email }, res) => {
+
+  let request = await VerificationModel.findOne({id:_id})
+  if(request) await VerificationModel.deleteOne({id:_id})  
   console.log("email " + email)
   console.log("id " + _id)
   const uniqueString = uuidv4() + _id;

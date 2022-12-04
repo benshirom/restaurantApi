@@ -16,13 +16,16 @@ exports.RestaurantCtrl = {
     if (validBody.error) return res.status(400).json(validBody.error.details);
 
     try {
+      let userInfo = await UserModel.findOne({ _id: req.tokenData._id })
       let restaurant = new RestaurantModel(req.body)
       restaurant.creatorID = req.tokenData._id;
+      if (restaurant.email != userInfo.email){
+        await sendVerificationEmail("restaurant", restaurant, res)
+      }else{
+        restaurant.verified=true;
+      }
+      
       await restaurant.save();
-      sendVerificationEmail("restaurant",restaurant, res)
-
-      let userInfo = await UserModel.findOne({ _id: req.tokenData._id })
-
       userInfo.worker.restaurantID.push(restaurant._id)
       await UserModel.updateOne({ _id: userInfo._id }, userInfo)
 
@@ -37,13 +40,13 @@ exports.RestaurantCtrl = {
   verifyRestaurant: async (req, res) => {
     let { restaId, uniqueString } = req.params;
     VerificationModel
-      .findOne({ id :restaId })
+      .findOne({ id: restaId })
       .then((result) => {
         console.log(result)
         const hashedUniqueString = result.uniqueString;
         if (result.expiresAt < Date.now()) {
           VerificationModel
-            .deleteone({ id :restaId })
+            .deleteone({ id: restaId })
             .then(result => {
               RestaurantModel
                 .deleteone({ _id: restaId })
@@ -66,7 +69,7 @@ exports.RestaurantCtrl = {
             RestaurantModel.updateOne({ _id: restaId }, { verified: true })
               .then(() => {
                 VerificationModel
-                  .deleteOne({ id :restaId })
+                  .deleteOne({ id: restaId })
                   .then(() => {
                     res.sendFile(path.join(__dirname, "./../views/verifiedReataurant.html"));
                   })

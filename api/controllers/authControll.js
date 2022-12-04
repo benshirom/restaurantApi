@@ -4,7 +4,7 @@ const { UserModel } = require("../models/userModel");
 const { VerificationModel } = require("../models/verificationModel");
 const { config } = require("../config/secret");
 const { validSignUpUser, validLogin, validSignUpWorker, validSignUpManager } = require("../validation/userValidation");
-const { createToken,sendVerificationEmail } = require("../helpers/userHelper");
+const { createToken, sendVerificationEmail, sendResetPasswordEmail } = require("../helpers/userHelper");
 
 
 
@@ -23,7 +23,7 @@ exports.authCtrl = {
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
       user.password = "***";
-      sendVerificationEmail("user",user, res);
+      sendVerificationEmail("user", user, res);
       res.status(201).json(user);
     }
     catch (err) {
@@ -47,7 +47,7 @@ exports.authCtrl = {
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
       user.password = "***";
-      sendVerificationEmail("manager",user, res);
+      sendVerificationEmail("manager", user, res);
 
       res.status(201).json(user);
     }
@@ -73,7 +73,7 @@ exports.authCtrl = {
       user.worker.restaurantID.push(restId)
       console.log(user)
       await user.save()
-      sendVerificationEmail("worker",user, res);
+      sendVerificationEmail("worker", user, res);
 
       // נרצה להצפין את הסיסמא בצורה חד כיוונית
       // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
@@ -101,8 +101,12 @@ exports.authCtrl = {
       let user = await UserModel.findOne({ email: req.body.email })
       if (!user) {
         return res.status(401).json({ msg: "Password or email is worng ,code:1" })
-      } else if (!user.verified) {
+      }
+      if (!user.verified) {
         return res.status(401).json({ status: "failed", msg: "Email hasnt been verified yet. check your inbox. " });
+      }
+      if (!user.active) {
+        res.json({ status: "failed", message: " account as been suspended" });
       }
       // אם הסיסמא שנשלחה בבאדי מתאימה לסיסמא המוצפנת במסד של אותו משתמש
       let authPassword = await bcrypt.compare(req.body.password, user.password);
@@ -128,13 +132,13 @@ exports.authCtrl = {
   verifyUser: async (req, res) => {
     let { userId, uniqueString } = req.params;
     VerificationModel
-      .findOne({ id :userId })
+      .findOne({ id: userId })
       .then((result) => {
         console.log(result)
         const hashedUniqueString = result.uniqueString;
         if (result.expiresAt < Date.now()) {
           VerificationModel
-            .deleteone({ id :userId })
+            .deleteone({ id: userId })
             .then(result => {
               UserModel
                 .deleteone({ _id: userId })
@@ -157,7 +161,7 @@ exports.authCtrl = {
             UserModel.updateOne({ _id: userId }, { verified: true })
               .then(() => {
                 VerificationModel
-                  .deleteOne({ id :userId })
+                  .deleteOne({ id: userId })
                   .then(() => {
                     res.sendFile(path.join(__dirname, "./../views/verified.html"));
                   })
@@ -189,4 +193,94 @@ exports.authCtrl = {
   verifiedUser: async (req, res) => {
     res.sendFile(path.join(__dirname, "../views/verified.html"))
   },
+
+
+  requestPasswordReset: async (req, res) => {
+    const { email } = req.body
+    try {
+
+      UserModel.findOne({ email }).then((user) => {
+        if (user) {
+          console.log(user.verified)
+          if (!user.verified) {
+            return res.json({ status: "failed", message: "Email isn't verified yet , please check your email" });
+          }
+          if (!user.active) {
+            return res.json({ status: "failed", message: " account as been suspended" });
+          }
+          sendResetPasswordEmail("resetpassword", user, res);
+          res.json(user);
+
+        } else {
+          return res.json({ status: "failed", message: "No account with the supplied email found. Please try again" });
+        }
+      });
+    } catch (error) {
+      console.log(err);
+      res.status(500).json({ msg: "err", err })
+    }
+
+
+  },
+  //נופל בTRY צריך לסגדר
+  resetPassword: async (req, res) => {
+    const { userId, uniqueString, newPassword } = req.body;
+    try {
+      let verificationInfo = await VerificationModel.findOne({ id:userId });
+    console.log(verificationInfo)
+      if (verificationInfo) {
+        const { expiresAt } = verificationInfo;
+        const hashedResetString = verificationInfo.uniqueString;
+        console.log("hashedResetString :"+hashedResetString)
+        console.log("uniqueString :"+uniqueString)
+        console.log("userId :"+userId)
+        if (expiresAt < Date.now()) {
+    //       // checking if link expired
+          let reset = await VerificationModel.deleteOne({ id:userId });
+          console.log(reset)
+          if (!reset) {
+            return res.status(401).json({ msg: "Password reset link as expired", err });
+          }
+        } 
+    //       //compare reset string with string from db
+    // return res.json({uniqueString,hashedResetString})
+          let compareUniq = await bcrypt.compare(uniqueString, hashedResetString);
+    
+          console.log(compareUniq)
+              
+          if (compareUniq) {
+            const hashedNewPassword = await bcrypt.hash(
+              newPassword,
+              config.salRounds
+            );
+            if (hashedNewPassword) {
+              // update user password
+              let update = await UserModel.updateOne(
+                { _id: userId },
+                {password: hashedNewPassword,}
+              );
+              if (update) {
+                // update completed
+                let reset1 = await VerificationModel.deleteOne({ id:userId });
+                if (reset1) {
+                  res.status(200).json({ status: "Success", msg: "Password reset successfully" });
+                } else {
+                   res.status(401).json({ msg: "Failed to update user password", error });
+                }
+              }
+            }
+          } else {
+             res.status(401).json({ msg: "Invalid password details" });
+    s      }
+        
+      } else {
+          // password reset request not found
+          res.status(401).json({ msg: "Password reset request not found" });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "Checking for existing password recors failed" });
+    }
+  },
+
 }
