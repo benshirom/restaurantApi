@@ -167,7 +167,7 @@ exports.authCtrl = {
               }
             } catch (error) {
               await VerificationModel.deleteOne({ _id: userId })
-              await UserModel.deleteOne({ _id: userId })
+              // await UserModel.deleteOne({ _id: userId })
               let message = "invalid verification details passed.check your inbox.";
               res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
             }

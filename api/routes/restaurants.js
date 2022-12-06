@@ -41,12 +41,7 @@ router.patch("/tables/editIsCatched/:editTableId", authManager, TableCtrl.editIs
 router.patch("/tables/location/:editTableId", authManager, TableCtrl.editLocation)
 router.patch("/tables/tableOwenr/:editTableId/:orderId", authManager, TableCtrl.editTableOwenr)
 
-router.get("/menu/:restId", MenuCtrl.getMenu)
-router.post("/menu/create/:restId", authManager, MenuCtrl.createItemMenu)
-router.patch("/menu/remove/:restId/:itemId", authManager, MenuCtrl.removeItemMenu)
-router.patch("/menu/edit/:editItemId", authManager, MenuCtrl.editItemMenu)
-router.patch("/menu/editcategory/:editItemId", authManager, MenuCtrl.editCategoryItemMenu)
-router.patch("/menu/editsubcategory/:editItemId", authManager, MenuCtrl.editSubcategoryItemMenu)
+
 
 
 // router.put("/Staff/:editId", authManager,WorkerCtrl.editWorker)
