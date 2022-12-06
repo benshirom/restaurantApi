@@ -130,6 +130,7 @@ exports.authCtrl = {
 
   verifyUser: async (req, res) => {
     let { userId, uniqueString } = req.params;
+    console.log("in")
     try {
       let verification = await VerificationModel.findOne({ id: userId })
       const { expiresAt } = verification;
@@ -137,52 +138,57 @@ exports.authCtrl = {
       if (verification) {
         if (expiresAt < Date.now()) {
           try {
+            console.log("לא בתוקף")
             await VerificationModel.deleteone({ id: userId })
             await UserModel.deleteone({ _id: userId })
             let message = "link hsa expired.please sigh up again ";
-            res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+            res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
           } catch (error) {
             let message = "an error occurre while clearing expired user verification record";
-            res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
-
+            res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
+            
           }
         } else {
+          console.log("בתוקף")
           let result = bcrypt.compare(uniqueString, hashedUniqueString)
           if (result) {
+            
+            console.log("שווה")
             try {
               let update = await UserModel.updateOne({ _id: userId }, { verified: true })
               if (update) {
+                console.log("עדכן")
                 // delete verify user collection when verified
                 await VerificationModel.deleteOne({ id: userId })
-                res.redirect(`${config.ReactUrl}messages/`);
+                res.redirect(`${config.ReactUrl}/messages/`);
               } else {
                 let message = "an error occurre while updating user verified ";
-                res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+                res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
               }
             } catch (error) {
               await VerificationModel.deleteOne({ _id: userId })
               await UserModel.deleteOne({ _id: userId })
               let message = "invalid verification details passed.check your inbox.";
-              res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+              res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
             }
           } else {
             await VerificationModel.deleteOne({ _id: userId })
             await UserModel.deleteOne({ _id: userId })
             let message = "an error occurre while compering vrification sentence";
-            res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+            res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
           }
         }
       } else {
         // account alredy verified or not exist
         let message = "Account doesnt exist or has been verified already. Please sign up or login in.";
-        res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+        res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
       }
     } catch (error) {
 
       await VerificationModel.deleteOne({ uniqueString })
       await UserModel.deleteOne({ _id: userId })
       let message = "an error occurre while checking for existing user Verification record ";
-      res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+      res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
 
     }
 
