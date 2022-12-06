@@ -1,9 +1,7 @@
 const express = require("express");
 const { RestaurantCtrl } = require("../controllers/restaurantControll");
 const { WorkerCtrl } = require("../controllers/workerControll");
-const { MenuCtrl } = require("../controllers/menuControll");
-const { OrderCtrl } = require("../controllers/orderControll");
-const { TableCtrl } = require("../controllers/tableControll");
+
 const { auth, authAdmin, authWorker, authManager, authWaiter } = require("../middlewares/auth");
 
 const router = express.Router();
@@ -22,24 +20,6 @@ router.put("/editRest/:editId", authManager, RestaurantCtrl.editRestaurant)
 // router.get("/getPaymentCalculation" ,authManager,RestaurantCtrl.getRestaurantPaymentCalculation)
 // לדבר עם ירין על שלושתם
 
-
-router.get("/orders" ,authWorker,OrderCtrl.getOrders)
-router.post("/orders/:resId" ,authWorker,OrderCtrl.addOrderByWorker)
-router.post("/orders/:custumerID" ,auth,OrderCtrl.addOrderDeliveryOrTA) 
-// router.post("/orders/payOrder" ,auth,OrderCtrl.payOnOrder)
-// router.post("/orders/discount/:orderId" ,authManager,OrderCtrl.discountOnOrder)
-// router.post("/orders" ,auth,OrderCtrl.addOrderByCustomer) 
-
-
-// router.get("/tables" ,authWorker,TableCtrl.getTables) 
-router.post("/tables/create" ,authManager,TableCtrl.createNewTable) 
-router.patch("/tables/add/:restId/:tableId" ,authManager,TableCtrl.addTableToRestaurant) 
-router.patch("/tables/remove/:restId/:tableId" ,authManager,TableCtrl.removeTableFromRestaurant) 
-router.delete("/tables/delete/:delTableId" ,authManager,TableCtrl.deleteTable) 
-router.patch("/tables/edit/:editTableId", authManager, TableCtrl.editTable)
-router.patch("/tables/editIsCatched/:editTableId", authManager, TableCtrl.editIsCatched)
-router.patch("/tables/location/:editTableId", authManager, TableCtrl.editLocation)
-router.patch("/tables/tableOwenr/:editTableId/:orderId", authManager, TableCtrl.editTableOwenr)
 
 
 
