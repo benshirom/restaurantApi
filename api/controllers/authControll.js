@@ -186,7 +186,6 @@ exports.authCtrl = {
     } catch (error) {
 
       await VerificationModel.deleteOne({ uniqueString })
-      await UserModel.deleteOne({ _id: userId })
       let message = "an error occurre while checking for existing user Verification record ";
       res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
 
