@@ -86,7 +86,7 @@ exports.validUserEdit = (_reqBody) => {
       country: Joi.string().min(2).max(50).allow(null,""),
       city: Joi.string().min(2).max(50).allow(null,""),
       Street: Joi.string().min(2).max(50).allow(null,""),
-      num: Joi.number().min(2).max(50).allow(null,"")
+      num: Joi.string().min(2).max(50).allow(null,"")
     },
 
   })

@@ -49,8 +49,6 @@ router.patch("/menu/editcategory/:editItemId", authManager, MenuCtrl.editCategor
 router.patch("/menu/editsubcategory/:editItemId", authManager, MenuCtrl.editSubcategoryItemMenu)
 
 
-// router.post("/Staff", authManager, WorkerCtrl.addworker)
-// router.delete("/Staff/:delId", authManager, WorkerCtrl.deleteWorker)
 // router.put("/Staff/:editId", authManager,WorkerCtrl.editWorker)
 
 

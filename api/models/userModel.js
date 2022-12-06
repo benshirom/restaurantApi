@@ -1,3 +1,4 @@
+const { string } = require("joi");
 const mongoose = require("mongoose");
 
 let userSchema = new mongoose.Schema({
@@ -20,7 +21,7 @@ let userSchema = new mongoose.Schema({
   active: { type: Boolean, default: true },
 
   worker: {
-    pin: {type: Number, default:null},
+    pin: {type: String, default:null},
     jobs: [{ type: String }],
     restaurantID: [mongoose.ObjectId],
 

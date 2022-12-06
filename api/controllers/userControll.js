@@ -1,4 +1,5 @@
 const { UserModel } = require("../models/userModel");
+const { RestaurantModel } = require("../models/restaurantModel");
 const { validWorkerFillDetails, validUserEdit } = require("../validation/userValidation");
 const bcrypt = require("bcrypt");
 
@@ -138,6 +139,28 @@ exports.userCtrl = {
       req.tokenData.jobs.forEach(async job => {
         if (job == "manager") {
           userInfo = await UserModel.deleteOne({ _id: delId }, { password: 0 });
+        }
+
+      });
+      res.json(userInfo);
+    }
+    catch (err) {
+      console.log(err)
+      res.status(500).json({ msg: "err", err })
+    }
+  },
+  deleteWorker: async (req, res) => {
+    try {
+      let {delId,restId} = req.params;
+      let userInfo;
+
+      console.log(delId);
+      console.log(req.tokenData.role);
+      
+      req.tokenData.jobs.forEach(async job => {
+        if (job == "manager") {
+          userInfo = await UserModel.deleteOne({ _id: delId }, { password: 0 });
+          let rest = await RestaurantModel.updateOne({ _id: restId }, { $pull: { 'workersArray': { $in: [itemId] } } })
         }
 
       });

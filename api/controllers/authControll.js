@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const { UserModel } = require("../models/userModel");
 const { VerificationModel } = require("../models/verificationModel");
+const { RestaurantModel } = require("../models/restaurantModel");
+
 const { config } = require("../config/secret");
 const { validSignUpUser, validLogin, validSignUpWorker, validSignUpManager } = require("../validation/userValidation");
 const { createToken, sendVerificationEmail, sendResetPasswordEmail } = require("../helpers/userHelper");
@@ -35,15 +37,13 @@ exports.authCtrl = {
   signUpManager: async (req, res) => {
     req.body.worker.jobs = ["manager"];
     let validBody = validSignUpManager(req.body);
-    // במידה ויש טעות בריק באדי שהגיע מצד לקוח
-    // יווצר מאפיין בשם אירור ונחזיר את הפירוט של הטעות
+
     if (validBody.error) {
       return res.status(400).json(validBody.error.details);
     }
     try {
       let user = new UserModel(req.body);
-      // נרצה להצפין את הסיסמא בצורה חד כיוונית
-      // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
+
       user.password = await bcrypt.hash(user.password, config.salRounds);
       await user.save();
       user.password = "***";
@@ -68,15 +68,14 @@ exports.authCtrl = {
       return res.status(400).json(validBody.error.details);
     }
     try {
-      let {restId} = req.params;
+      let { restId } = req.params;
       let user = new UserModel(req.body);
       user.worker.restaurantID.push(restId)
       console.log(user)
       await user.save()
-      sendVerificationEmail("worker", user, res);
+      await RestaurantModel.updateOne({ _id: restId }, { $push: { 'workersArray': user._id } })
 
-      // נרצה להצפין את הסיסמא בצורה חד כיוונית
-      // 10 - רמת הצפנה שהיא מעולה לעסק בינוני , קטן
+      sendVerificationEmail("worker", user, res);
       res.status(201).json(user);
     }
     catch (err) {
@@ -131,63 +130,62 @@ exports.authCtrl = {
 
   verifyUser: async (req, res) => {
     let { userId, uniqueString } = req.params;
-    VerificationModel
-      .findOne({ id: userId })
-      .then((result) => {
-        console.log(result)
-        const hashedUniqueString = result.uniqueString;
-        if (result.expiresAt < Date.now()) {
-          VerificationModel
-            .deleteone({ id: userId })
-            .then(result => {
-              UserModel
-                .deleteone({ _id: userId })
-                .then(() => {
-                  let message = "link hsa expired.please sigh up again ";
-                  res.redirect(`/users/verified/?error=true&message=${message}`);
-                })
-                .catch((error) => {
-                  let message = "clearing user with expired unique string failed ";
-                  res.redirect(`/users/verified/?error=true&message=${message}`);
-                })
-            })
-            .catch((error) => {
-              console.log(error);
-              let message = "an error occurre while clearing  expired user verification record";
-              res.redirect(`/users/verified/?error=true&message=${message}`);
-            })
+    try {
+      let verification = await VerificationModel.findOne({ id: userId })
+      const { expiresAt } = verification;
+      const hashedUniqueString = verification.uniqueString;
+      if (verification) {
+        if (expiresAt < Date.now()) {
+          try {
+            await VerificationModel.deleteone({ id: userId })
+            await UserModel.deleteone({ _id: userId })
+            let message = "link hsa expired.please sigh up again ";
+            res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+          } catch (error) {
+            let message = "an error occurre while clearing expired user verification record";
+            res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+
+          }
         } else {
-          if (bcrypt.compare(uniqueString, hashedUniqueString)) {
-            UserModel.updateOne({ _id: userId }, { verified: true })
-              .then(() => {
-                VerificationModel
-                  .deleteOne({ id: userId })
-                  .then(() => {
-                    res.sendFile(path.join(__dirname, "./../views/verified.html"));
-                  })
-                  .catch(error => {
-                    console.log(error)
-                    let message = "an error occurre while finalizing sucssful verification  ";
-                    res.redirect(`/users/verified/?error=true&message=${message}`);
-                  })
-              })
-              .catch(error => {
-                console.log(error)
+          let result = bcrypt.compare(uniqueString, hashedUniqueString)
+          if (result) {
+            try {
+              let update = await UserModel.updateOne({ _id: userId }, { verified: true })
+              if (update) {
+                // delete verify user collection when verified
+                await VerificationModel.deleteOne({ id: userId })
+                res.redirect(`${config.ReactUrl}messages/`);
+              } else {
                 let message = "an error occurre while updating user verified ";
-                res.redirect(`/users/verified/?error=true&message=${message}`);
-              })
+                res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+              }
+            } catch (error) {
+              await VerificationModel.deleteOne({ _id: userId })
+              await UserModel.deleteOne({ _id: userId })
+              let message = "invalid verification details passed.check your inbox.";
+              res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+            }
           } else {
-            console.log(error)
-            let message = "an error occurre while compering unique strings ";
-            res.redirect(`/users/verified/?error=true&message=${message}`);
+            await VerificationModel.deleteOne({ _id: userId })
+            await UserModel.deleteOne({ _id: userId })
+            let message = "an error occurre while compering vrification sentence";
+            res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
           }
         }
-      })
-      .catch((error) => {
-        console.log(error)
-        let message = "an error occurre while checking for existing user Verification record ";
-        res.redirect(`/users/verified/?error=true&message=${message}`);
-      })
+      } else {
+        // account alredy verified or not exist
+        let message = "Account doesnt exist or has been verified already. Please sign up or login in.";
+        res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+      }
+    } catch (error) {
+
+      await VerificationModel.deleteOne({ uniqueString })
+      await UserModel.deleteOne({ _id: userId })
+      let message = "an error occurre while checking for existing user Verification record ";
+      res.redirect(`${config.ReactUrl}messages/?error=true&message=${message}`);
+
+    }
+
   },
 
   verifiedUser: async (req, res) => {
@@ -222,60 +220,58 @@ exports.authCtrl = {
 
 
   },
-  //נופל בTRY צריך לסגדר
   resetPassword: async (req, res) => {
     const { userId, uniqueString, newPassword } = req.body;
     try {
-      let verificationInfo = await VerificationModel.findOne({ id:userId });
-    console.log(verificationInfo)
+      let verificationInfo = await VerificationModel.findOne({ id: userId });
+      // console.log(verificationInfo)
       if (verificationInfo) {
         const { expiresAt } = verificationInfo;
         const hashedResetString = verificationInfo.uniqueString;
-        console.log("hashedResetString :"+hashedResetString)
-        console.log("uniqueString :"+uniqueString)
-        console.log("userId :"+userId)
+        console.log("hashedResetString :" + hashedResetString)
+        console.log("uniqueString :" + uniqueString)
+        console.log("userId :" + userId)
         if (expiresAt < Date.now()) {
-    //       // checking if link expired
-          let reset = await VerificationModel.deleteOne({ id:userId });
-          console.log(reset)
+          // checking if link expired
+          let reset = await VerificationModel.deleteOne({ id: userId });
+          // console.log(reset)
           if (!reset) {
             return res.status(401).json({ msg: "Password reset link as expired", err });
           }
-        } 
-    //       //compare reset string with string from db
-    // return res.json({uniqueString,hashedResetString})
-          let compareUniq = await bcrypt.compare(uniqueString, hashedResetString);
-    
-          console.log(compareUniq)
-              
-          if (compareUniq) {
-            const hashedNewPassword = await bcrypt.hash(
-              newPassword,
-              config.salRounds
+        }
+
+        let compareUniq = await bcrypt.compare(uniqueString, hashedResetString);
+        // console.log(compareUniq)
+
+        if (compareUniq) {
+          const hashedNewPassword = await bcrypt.hash(
+            newPassword,
+            config.salRounds
+          );
+          if (hashedNewPassword) {
+            // update user password
+            let update = await UserModel.updateOne(
+              { _id: userId },
+              { password: hashedNewPassword, }
             );
-            if (hashedNewPassword) {
-              // update user password
-              let update = await UserModel.updateOne(
-                { _id: userId },
-                {password: hashedNewPassword,}
-              );
-              if (update) {
-                // update completed
-                let reset1 = await VerificationModel.deleteOne({ id:userId });
-                if (reset1) {
-                  res.status(200).json({ status: "Success", msg: "Password reset successfully" });
-                } else {
-                   res.status(401).json({ msg: "Failed to update user password", error });
-                }
+            if (update) {
+              // update completed
+              let resetVerification = await VerificationModel.deleteOne({ id: userId });
+              if (resetVerification) {
+                res.status(200).json({ status: "Success", msg: "Password reset successfully" });
+              } else {
+                res.status(401).json({ msg: "Failed to update user password", error });
               }
             }
-          } else {
-             res.status(401).json({ msg: "Invalid password details" });
-    s      }
-        
+          }
+        } else {
+          res.status(401).json({ msg: "Invalid password details" });
+          s
+        }
+
       } else {
-          // password reset request not found
-          res.status(401).json({ msg: "Password reset request not found" });
+        // password reset request not found
+        res.status(401).json({ msg: "Password reset request not found" });
       }
     } catch (error) {
       console.log(error);
