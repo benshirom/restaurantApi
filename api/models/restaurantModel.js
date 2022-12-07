@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const timestamps = require('mongoose-timestamp');
 
 let restaurantSchema = new mongoose.Schema({
     name: String,
@@ -30,6 +29,5 @@ let restaurantSchema = new mongoose.Schema({
     verified: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
   
-})
-restaurantSchema.plugin(timestamps);
+},{timestamps:true})
 exports.RestaurantModel = mongoose.model("restaurants", restaurantSchema);

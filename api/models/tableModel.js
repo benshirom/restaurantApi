@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const timestamps = require('mongoose-timestamp');
 
 let tableSchema = new mongoose.Schema({
     //order id
@@ -12,6 +11,5 @@ let tableSchema = new mongoose.Schema({
         y:Number
     }  ,
     tableNumber:Number
-})
-tableSchema.plugin(timestamps);
+},{timestamps:true})
 exports.TableModel = mongoose.model("tables", tableSchema);

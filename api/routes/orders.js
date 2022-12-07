@@ -4,9 +4,9 @@ const { auth, authAdmin, authWorker, authManager, authWaiter } = require("../mid
 
 const router = express.Router();
 
-router.get("/" ,authWorker,OrderCtrl.getOrders)
-router.post("/:resId" ,authWorker,OrderCtrl.addOrderByWorker)
-router.post("/:custumerID" ,auth,OrderCtrl.addOrderDeliveryOrTA) 
+router.get("/:restId" ,authWorker,OrderCtrl.getOrders)
+router.post("/addByWorker/:restId" ,authWorker,OrderCtrl.addOrderByWorker)
+router.post("/addByCustomer/:restId" ,auth,OrderCtrl.addOrderByCustomer) 
 // router.post("/payOrder" ,auth,OrderCtrl.payOnOrder)
 // router.post("/discount/:orderId" ,authManager,OrderCtrl.discountOnOrder)
 // router.post("/" ,auth,OrderCtrl.addOrderByCustomer) 

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const timestamps = require('mongoose-timestamp');
 
 let userSchema = new mongoose.Schema({
   fullName: {
@@ -25,16 +24,13 @@ let userSchema = new mongoose.Schema({
 
   },
 
-  custumer: {
     address: {
       country:{type: String, default: ""} ,
       city:{type: String, default: ""} ,
       Street: {type: String, default: ""},
       num: {type: Number, default:null}
   },
-    ordersaArr: [mongoose.ObjectId]
-  },
+    
 
-});
-userSchema.plugin(timestamps);
+},{timestamps:true});
 exports.UserModel = mongoose.model("users", userSchema);

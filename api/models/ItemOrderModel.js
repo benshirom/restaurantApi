@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const timestamps = require('mongoose-timestamp');
 
 let itemOderSchema = new mongoose.Schema({
     itemMenuId: mongoose.ObjectId,
@@ -7,6 +6,5 @@ let itemOderSchema = new mongoose.Schema({
     note:{ type:String, default:""},
 
     
-})
-itemOderSchema.plugin(timestamps);
+},{timestamps:true})
 exports.itemOderModel = mongoose.model("itemoder", itemOderSchema);

@@ -35,12 +35,15 @@ exports.authCtrl = {
     }
   },
   signUpManager: async (req, res) => {
+    console.log(req.body)
     req.body.worker.jobs = ["manager"];
+
     let validBody = validSignUpManager(req.body);
 
     if (validBody.error) {
       return res.status(400).json(validBody.error.details);
     }
+
     try {
       let user = new UserModel(req.body);
 
@@ -99,18 +102,18 @@ exports.authCtrl = {
       // קודם כל לבדוק אם המייל שנשלח קיים  במסד
       let user = await UserModel.findOne({ email: req.body.email })
       if (!user) {
-        return res.status(401).json({ msg: "Password or email is worng ,code:1" })
+        return res.status(401).json({ err: "Password or email is worng ,code:1" })
       }
       if (!user.verified) {
-        return res.status(401).json({ status: "failed", msg: "Email hasnt been verified yet. check your inbox. " });
+        return res.status(401).json({ err: "Email hasnt been verified yet. check your inbox. " });
       }
       if (!user.active) {
-        res.json({ status: "failed", message: " account as been suspended" });
+        res.json({ status: "failed", err: " account as been suspended" });
       }
       // אם הסיסמא שנשלחה בבאדי מתאימה לסיסמא המוצפנת במסד של אותו משתמש
       let authPassword = await bcrypt.compare(req.body.password, user.password);
       if (!authPassword) {
-        return res.status(401).json({ msg: "Password or email is worng ,code:2" });
+        return res.status(401).json({ err: "Password or email is worng ,code:2" });
       }
       // מייצרים טוקן לפי שמכיל את האיידי של המשתמש
       let token = createToken(user._id, user.role, user.worker.jobs);

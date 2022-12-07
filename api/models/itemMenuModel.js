@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const timestamps = require('mongoose-timestamp');
 
 let itemMenuSchema = new mongoose.Schema({
     workerID: mongoose.ObjectId,
@@ -13,6 +12,5 @@ let itemMenuSchema = new mongoose.Schema({
     subCategory: { type: String, default: "" },
     
 
-})
-itemMenuSchema.plugin(timestamps);
+},{timestamps:true})
 exports.itemMenuModel = mongoose.model("itemmenus", itemMenuSchema);
