@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const timestamps = require('mongoose-timestamp');
 
 let restaurantSchema = new mongoose.Schema({
     name: String,
@@ -12,9 +13,7 @@ let restaurantSchema = new mongoose.Schema({
         num: Number
     },
     creatorID: mongoose.ObjectId,
-    date_created: {
-        type: Date, default: Date.now()
-    },
+ 
     gallry:{
         img:[{type: String, default: ""}],
         video:[{type: String, default: ""}],
@@ -32,5 +31,5 @@ let restaurantSchema = new mongoose.Schema({
     active: { type: Boolean, default: true },
   
 })
-
+restaurantSchema.plugin(timestamps);
 exports.RestaurantModel = mongoose.model("restaurants", restaurantSchema);

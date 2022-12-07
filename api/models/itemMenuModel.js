@@ -1,5 +1,5 @@
-const { string } = require("joi");
 const mongoose = require("mongoose");
+const timestamps = require('mongoose-timestamp');
 
 let itemMenuSchema = new mongoose.Schema({
     workerID: mongoose.ObjectId,
@@ -8,14 +8,11 @@ let itemMenuSchema = new mongoose.Schema({
     img: { type: String, default: "" },
     video: { type: String, default: "" },
     calories: { type: Number, default: 0 },
-    Price: { type: Number, default: 0 },
-    category: {
-        name: String,
-        subcategory: { type: String, default: "" }
-    },
+    price: { type: Number, default: 0 },
+    category: String,
+    subCategory: { type: String, default: "" },
     
-    date_created: {
-        type: Date, default: Date.now()
-    },
+
 })
+itemMenuSchema.plugin(timestamps);
 exports.itemMenuModel = mongoose.model("itemmenus", itemMenuSchema);

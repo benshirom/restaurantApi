@@ -6,12 +6,11 @@ exports.validateItemMenu = (_reqBody) => {
         info: Joi.string().min(3).max(100).allow(null, ""),
         img: Joi.string().min(2).max(999).allow(null, ""),
         video: Joi.string().min(2).max(999).allow(null, ""),
-        Price: Joi.number().required(),
+        price: Joi.number().required(),
         calories: Joi.number().allow(null, 0),
-        category: {
-            name: Joi.string().min(2).max(20).required(),
-            subcategory: Joi.string().min(2).max(20).allow(null, "")
-        }
+        category:Joi.string().min(2).max(20).required(),
+        subCategory: Joi.string().min(2).max(20).allow(null, "")
+        
 
     })
     return schemaJoi.validate(_reqBody);
@@ -22,7 +21,7 @@ exports.validateEditItemMenu = (_reqBody) => {
         info: Joi.string().min(3).max(100).allow(null, ""),
         img: Joi.string().min(2).max(999).allow(null, ""),
         video: Joi.string().min(2).max(999).allow(null, ""),
-        Price: Joi.number(),
+        price: Joi.number(),
         calories: Joi.number()
        
     })

@@ -1,5 +1,5 @@
-const { string } = require("joi");
 const mongoose = require("mongoose");
+const timestamps = require('mongoose-timestamp');
 
 let userSchema = new mongoose.Schema({
   fullName: {
@@ -9,9 +9,7 @@ let userSchema = new mongoose.Schema({
   email:{type: String, default: ""},
   phone:{type: String, default: ""},
   password:{type: String, default: ""},
-  date_created: {
-    type: Date, default: Date.now()
-  },
+ 
   // role of the user if regular user or admin
   role: {
     type: String, default: "user"
@@ -35,8 +33,8 @@ let userSchema = new mongoose.Schema({
       num: {type: Number, default:null}
   },
     ordersaArr: [mongoose.ObjectId]
-  }
+  },
 
-})
-
+});
+userSchema.plugin(timestamps);
 exports.UserModel = mongoose.model("users", userSchema);

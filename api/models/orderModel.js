@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
+const timestamps = require('mongoose-timestamp');
 
 let orderSchema = new mongoose.Schema({
-    //Item Menu Id
+    //Item order Id
     orderItems: [mongoose.ObjectId],
     status: String,
     estimatedTime: Date ,
-    Discount: { type: Number, default: 0 },
+    discount: { type: Number, default: 0 },
     finalPrice: { type: Number, default: 0 },
-    date_created: {
-        type: Date, default: Date.now()
-    },
+    note:{ type:String, default:""},
+    isTA:{ type:Boolean, default:false},
+   
     // need to add info for order and for orderItems
     byWorker: {
         // tableNumber: Number,
@@ -17,11 +18,11 @@ let orderSchema = new mongoose.Schema({
     },
     byCustumer:
     {
+        isDelivery:{type:Boolean, default:false},
         isPaid: { type: Boolean, default: false },
         custumerID: mongoose.ObjectId,
     },
-    deliveryOrTA: {
-        custumerID: mongoose.ObjectId,
-    }
+  
 })
+orderSchema.plugin(timestamps);
 exports.orderModel = mongoose.model("orders", orderSchema);

@@ -3,7 +3,7 @@ const { UserModel } = require("../models/userModel");
 const { itemMenuModel } = require("../models/itemMenuModel");
 const { validateItemMenu,validateEditItemMenu } = require("../validation/itemMenuValidation");
 
-
+// צריך לעדכן את הבקשות מאחר והמודל השתנה
 exports.MenuCtrl = {
     getMenu: async (req, res) => {
         let { restId } = req.params
