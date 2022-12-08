@@ -5,9 +5,34 @@ const bcrypt = require("bcrypt");
 
 
 exports.userCtrl = {
+  checkToken: async (req, res) => {
+    try {
+
+      let userInfo = await UserModel.findOne({ _id: req.tokenData._id });
+      console.log(req.tokenData)
+      if (!userInfo) {
+        return res.status(400).json({ err: "User not found !" })
+      }
+
+      if (req.tokenData.exp > Date.now()) {
+
+        return res.status(400).json({ err: "Token is expierd , go and log in please" })
+      }
+
+
+
+      res.json("success");
+
+
+    }
+    catch (err) {
+      console.log(err)
+      res.status(500).json({ msg: "err", err })
+    }
+  },
   myInfo: async (req, res) => {
     try {
-      
+
       let userInfo = await UserModel.findOne({ _id: req.tokenData._id }, { password: 0 });
       res.json(userInfo);
     }
@@ -17,7 +42,7 @@ exports.userCtrl = {
     }
   },
   userInfo: async (req, res) => {
-    let {userId} = req.params;
+    let { userId } = req.params;
     try {
       let userInfo = await UserModel.findOne({ _id: userId });
       res.json(userInfo);
@@ -33,27 +58,27 @@ exports.userCtrl = {
     console.log(req.body)
     let validBody = validWorkerFillDetails(req.body);
 
-    
+
     if (validBody.error) {
       return res.status(400).json(validBody.error.details);
     }
     try {
       let workerId = req.params.workerId;
       let workerInfo = await UserModel.findOne({ _id: workerId })
-      if(workerInfo.verified){
+      if (workerInfo.verified) {
         return res.status(400).json({ msg: "User has already verified and filled in the details" })
       }
-        let hashPass = await bcrypt.hash(req.body.password, 10);
-        workerInfo.worker.pin = req.body.worker.pin
-        workerInfo.phone = req.body.phone
-        workerInfo.password = hashPass
-        workerInfo.fullName = req.body.fullName
-        workerInfo.verified=true;
-        let workerUpdate = await UserModel.updateOne({ _id: workerId }, workerInfo)
-  
-        workerUpdate.password = "*******";
-        console.log(workerUpdate);
-        res.status(201).json(workerUpdate);
+      let hashPass = await bcrypt.hash(req.body.password, 10);
+      workerInfo.worker.pin = req.body.worker.pin
+      workerInfo.phone = req.body.phone
+      workerInfo.password = hashPass
+      workerInfo.fullName = req.body.fullName
+      workerInfo.verified = true;
+      let workerUpdate = await UserModel.updateOne({ _id: workerId }, workerInfo)
+
+      workerUpdate.password = "*******";
+      console.log(workerUpdate);
+      res.status(201).json(workerUpdate);
     }
     catch (err) {
       if (err.code == 11000) {
@@ -80,7 +105,7 @@ exports.userCtrl = {
     }
     try {
       let editId = req.params.editId;
-      let userUpdate = await UserModel.updateOne({ _id: editId },{$set:{'worker.jobs':req.body.jobs}})
+      let userUpdate = await UserModel.updateOne({ _id: editId }, { $set: { 'worker.jobs': req.body.jobs } })
       console.log(userUpdate)
       res.json(userUpdate);
     }
@@ -101,18 +126,18 @@ exports.userCtrl = {
       console.log(editId)
       console.log(req.tokenData)
       if (req.tokenData.role == "admin") {
-         userUpdate = await UserModel.updateOne({ _id: editId },req.body)
+        userUpdate = await UserModel.updateOne({ _id: editId }, req.body)
       }
       else if (req.tokenData._id == editId) {
-         userUpdate = await UserModel.updateOne({ _id: editId },req.body)
+        userUpdate = await UserModel.updateOne({ _id: editId }, req.body)
       }
       req.tokenData.jobs.forEach(async job => {
         if (job == "manager") {
           console.log(job)
 
-           userUpdate = await UserModel.updateOne({ _id: editId },req.body)
+          userUpdate = await UserModel.updateOne({ _id: editId }, req.body)
         }
-        
+
 
       })
       console.log(userUpdate)
@@ -151,12 +176,12 @@ exports.userCtrl = {
   },
   deleteWorker: async (req, res) => {
     try {
-      let {delId,restId} = req.params;
+      let { delId, restId } = req.params;
       let userInfo;
 
       console.log(delId);
       console.log(req.tokenData.role);
-      
+
       req.tokenData.jobs.forEach(async job => {
         if (job == "manager") {
           userInfo = await UserModel.deleteOne({ _id: delId }, { password: 0 });

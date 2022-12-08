@@ -14,6 +14,7 @@ router.post("/",authCtrl.signUp)
 
 router.put("/userEdit/:editId", auth, userCtrl.editUser)
 router.delete("/:delId", auth, userCtrl.deleteUser)
+router.get("/checkToken", auth, userCtrl.checkToken)
 
 router.post("/manager",authCtrl.signUpManager)
 
