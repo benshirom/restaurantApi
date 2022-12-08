@@ -21,7 +21,7 @@ exports.userCtrl = {
 
 
 
-      res.json("success");
+      res.json({data:userInfo,msg:"success"});
 
 
     }
