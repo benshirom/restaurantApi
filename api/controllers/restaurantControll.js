@@ -104,7 +104,7 @@ exports.RestaurantCtrl = {
   getRestaurant: async (req, res) => {
     try {
       let { resId } = req.params
-      let data = await RestaurantModel.findOne({ _id: resId });
+      let data = await RestaurantModel.findOne({ _id: resId }).populate({path: 'menu',model: 'itemmenus'});
       res.json(data);
     }
     catch (err) {
