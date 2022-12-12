@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 let tableSchema = new mongoose.Schema({
     //order id
-    tableOwenr: mongoose.ObjectId||null, 
+    orderID: mongoose.ObjectId||null, 
     seats:Number,
     isCatched:{type:Boolean,default:false},
     status:String,

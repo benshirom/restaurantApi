@@ -70,36 +70,36 @@ exports.MenuCtrl = {
             res.status(500).json({ msg: "there error try again later", err })
         }
     },
-    editCategoryItemMenu: async (req, res) => {
+    // editCategoryItemMenu: async (req, res) => {
         
-        if (!req.body.category.name) {
-          return res.status(400).json({ msg: "Need to send category" });
-        }
-        let { editItemId } = req.params
-        try {
-            console.log(req.body)
-            let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.name':req.body.category.name}})
-            res.json(itemEdit)
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({ msg: "there error try again later", err })
-        }
-    },
-    editSubcategoryItemMenu: async (req, res) => {
+    //     if (!req.body.category.name) {
+    //       return res.status(400).json({ msg: "Need to send category" });
+    //     }
+    //     let { editItemId } = req.params
+    //     try {
+    //         console.log(req.body)
+    //         let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.name':req.body.category.name}})
+    //         res.json(itemEdit)
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.status(500).json({ msg: "there error try again later", err })
+    //     }
+    // },
+    // editSubcategoryItemMenu: async (req, res) => {
         
-        if (!req.body.category.subcategory) {
-          return res.status(400).json({ msg: "Need to send subcategory" });
-        }
-        let { editItemId } = req.params
-        try {
-            console.log(req.body)
-            let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.subcategory':req.body.category.subcategory}})
-            res.json(itemEdit)
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({ msg: "there error try again later", err })
-        }
-    }
+    //     if (!req.body.category.subcategory) {
+    //       return res.status(400).json({ msg: "Need to send subcategory" });
+    //     }
+    //     let { editItemId } = req.params
+    //     try {
+    //         console.log(req.body)
+    //         let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.subcategory':req.body.category.subcategory}})
+    //         res.json(itemEdit)
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.status(500).json({ msg: "there error try again later", err })
+    //     }
+    // }
 
 }
 

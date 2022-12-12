@@ -22,7 +22,9 @@ exports.validateEditItemMenu = (_reqBody) => {
         img: Joi.string().min(2).max(999).allow(null, ""),
         video: Joi.string().min(2).max(999).allow(null, ""),
         price: Joi.number(),
-        calories: Joi.number()
+        calories: Joi.number(),
+        category:Joi.string().min(2).max(20).required(),
+        subCategory: Joi.string().min(2).max(20).allow(null, "")
        
     })
     return schemaJoi.validate(_reqBody);

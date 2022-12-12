@@ -7,14 +7,12 @@ const router = express.Router();
 
 // router.get("/tables" ,authWorker,TableCtrl.getTables) 
 
-router.post("/create" ,authManager,TableCtrl.createNewTable) 
-router.patch("/add/:restId/:tableId" ,authManager,TableCtrl.addTableToRestaurant) 
-router.patch("/remove/:restId/:tableId" ,authManager,TableCtrl.removeTableFromRestaurant) 
-router.delete("/delete/:delTableId" ,authManager,TableCtrl.deleteTable) 
+router.patch("/create/:restId" ,authManager,TableCtrl.createNewTable) 
+router.delete("/remove/:restId/:tableId" ,authManager,TableCtrl.removeTableFromRestaurant) 
 router.patch("/edit/:editTableId", authManager, TableCtrl.editTable)
-router.patch("/editIsCatched/:editTableId", authManager, TableCtrl.editIsCatched)
+router.patch("/editOrderID/:editTableId/:orderID", authManager, TableCtrl.editOrderID)
 router.patch("/location/:editTableId", authManager, TableCtrl.editLocation)
-router.patch("/tableOwenr/:editTableId/:orderId", authManager, TableCtrl.editTableOwenr)
+// router.patch("/tableOwenr/:editTableId/:orderId", authManager, TableCtrl.editTableOwenr)
 
 
 

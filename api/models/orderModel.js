@@ -9,7 +9,7 @@ let orderSchema = new mongoose.Schema({
     finalPrice: { type: Number, default: 0 },
     note:{ type:String, default:""},
     isTA:{ type:Boolean, default:false},
-   
+    actice:{ type:Boolean, default:true},
     // need to add info for order and for orderItems
     byWorker: {
         // tableNumber: Number,
