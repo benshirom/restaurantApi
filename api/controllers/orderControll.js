@@ -1,7 +1,10 @@
 const { RestaurantModel } = require("../models/restaurantModel");
 const { TableModel } = require("../models/tableModel");
 const { orderModel } = require("../models/orderModel");
+const { itemOrderModel } = require("../models/itemOrderModel");
 const { validateOrderByWorker, validateOrderByCustumer } = require("../validation/orderValidation");
+const { validateItemMenu } = require("../validation/itemMenuValidation");
+const { validateItemOrder } = require("../validation/itemOrderValidation");
 
 exports.OrderCtrl = {
   getOrders: async (req, res) => {
@@ -70,13 +73,32 @@ exports.OrderCtrl = {
       let newOrder = new orderModel(req.body);
       newOrder.byCustumer.custumerID = req.tokenData._id;
       await newOrder.save();
-      let orders = await RestaurantModel.updateOne({ _id: restId },{ $push: { 'orders': newOrder._id } }
-      );
-      res.json(orders);
+      let resta = await RestaurantModel.updateOne({ _id: restId },{ $push: { 'orders': newOrder._id } });
+      res.json(resta);
     } catch (err) {
       console.log(err);
       res.status(500).json({ msg: "there error try again later", err });
     }
   },
+  addItemToOrder: async (req, res) => {
+    let validBody = validateItemOrder(req.body);
+    if (validBody.error) {
+      return res.status(400).json({ msg: "Need to send body" });
+    }
+    try {
+      let { orderId } = req.params;
+
+      let item = new itemOrderModel(req.body);
+      await item.save()
+      let order = await orderModel.updateOne({ _id: orderId },{ $setOnInsert: { 'itemMenuId': item._id } });
+      res.json(order);
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ msg: "there error try again later", err });
+    }
+   
+
+  }
   // addOrderDeliveryOrTA: async (req, res) => {},
 };
