@@ -90,7 +90,7 @@ exports.OrderCtrl = {
 
       let item = new itemOrderModel(req.body);
       await item.save()
-      let order = await orderModel.updateOne({ _id: orderId },{ $setOnInsert: { 'itemMenuId': item._id } });
+      let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': item._id } });
       res.json(order);
 
     } catch (err) {
