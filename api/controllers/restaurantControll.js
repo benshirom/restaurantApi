@@ -19,12 +19,12 @@ exports.RestaurantCtrl = {
       let userInfo = await UserModel.findOne({ _id: req.tokenData._id })
       let restaurant = new RestaurantModel(req.body)
       restaurant.creatorID = req.tokenData._id;
-      if (restaurant.email != userInfo.email){
+      if (restaurant.email != userInfo.email) {
         await sendVerificationEmail("restaurant", restaurant, res)
-      }else{
-        restaurant.verified=true;
+      } else {
+        restaurant.verified = true;
       }
-      
+
       await restaurant.save();
       userInfo.worker.restaurantID.push(restaurant._id)
       await UserModel.updateOne({ _id: userInfo._id }, userInfo)
@@ -105,10 +105,10 @@ exports.RestaurantCtrl = {
     try {
       let { resId } = req.params
       let data = await RestaurantModel.findOne({ _id: resId })
-      .populate({path: 'menu',model: 'itemmenus'})
-      .populate({path: 'orders',model: 'orders'})
-      .populate({path: 'tables',model: 'tables'})
-      .populate({path: 'workersArray',model: 'users'});
+        .populate({ path: 'menu', model: 'itemmenus' })
+        .populate({ path: 'orders', model: 'orders' })
+        .populate({ path: 'tables', model: 'tables' })
+        .populate({ path: 'workersArray', model: 'users' });
       res.json(data);
     }
     catch (err) {
@@ -156,5 +156,28 @@ exports.RestaurantCtrl = {
       res.status(500).json({ msg: "err", err })
     }
   },
+  getCanvas: async (req, res) => { 
+    let { resId } = req.params
+try {
+  let data = await RestaurantModel.findOne({ _id: resId })
+  res.json(data.tablesCanvas);
 
+} catch (err) {
+  console.log(err)
+  res.status(500).json({ msg: "err", err })
+}
+
+  },
+  setCanvas: async (req, res) => { 
+    let { resId } = req.params
+    try {
+      if(!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
+      let data = await RestaurantModel.updateOne({ _id: resId },{tablesCanvas:req.body.canvas})
+      res.json(data);
+
+    } catch (error) {
+      
+    }
+
+  },
 }

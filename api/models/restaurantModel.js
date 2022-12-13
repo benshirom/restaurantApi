@@ -1,3 +1,4 @@
+const { json } = require("express");
 const mongoose = require("mongoose");
 
 let restaurantSchema = new mongoose.Schema({
@@ -23,6 +24,7 @@ let restaurantSchema = new mongoose.Schema({
     workersArray: [mongoose.ObjectId],
     //Table Id
     tables:[mongoose.ObjectId],
+    tablesCanvas:{type:JSON, default:""},
     //order Id
     orders:[mongoose.ObjectId],
 
