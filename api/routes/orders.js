@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/:restId" ,authWorker,OrderCtrl.getOrders)
 router.post("/addByWorker/:restId" ,authWorker,OrderCtrl.addOrderByWorker)
 router.post("/addByCustomer/:restId" ,auth,OrderCtrl.addOrderByCustomer) 
-router.post("/addItemToOrder/:orderId" ,authWorker,OrderCtrl.addItemToOrder) 
+router.post("/addItemToOrder/:orderId/:itemMenuId" ,authWorker,OrderCtrl.addItemToOrder) 
 
 // router.post("/payOrder" ,auth,OrderCtrl.payOnOrder)
 // router.post("/discount/:orderId" ,authManager,OrderCtrl.discountOnOrder)
