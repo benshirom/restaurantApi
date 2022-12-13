@@ -3,7 +3,6 @@ const { TableModel } = require("../models/tableModel");
 const { orderModel } = require("../models/orderModel");
 const { itemOrderModel } = require("../models/itemOrderModel");
 const { validateOrderByWorker, validateOrderByCustumer } = require("../validation/orderValidation");
-const { validateItemMenu } = require("../validation/itemMenuValidation");
 const { validateItemOrder } = require("../validation/itemOrderValidation");
 
 exports.OrderCtrl = {
