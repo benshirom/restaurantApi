@@ -1,6 +1,6 @@
 const { RestaurantModel } = require("../models/restaurantModel");
 const { orderModel } = require("../models/orderModel");
-const { itemOrderModel } = require('../models/itemOrdersModel');
+const { itemOrderModel } = require('../models/itemOrderModel');
 const { validateOrderByWorker, validateOrderByCustumer } = require("../validation/orderValidation");
 const { validateItemOrder } = require("../validation/itemOrderValidation");
 
