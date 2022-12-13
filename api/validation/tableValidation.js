@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const { min } = require("lodash");
 
 exports.validateAddTable = (_reqBody) => {
     let schemaJoi = Joi.object({
@@ -28,8 +27,8 @@ exports.validateEditTable = (_reqBody) => {
 exports.validateEditTableLocation = (_reqBody) => {
     let schemaJoi = Joi.object({
         location: {
-            x: Joi.number().required(),
-            y: Joi.number().required()
+            x: Joi.number().min(1).required(),
+            y: Joi.number().min(1).required()
         }
 
     })
