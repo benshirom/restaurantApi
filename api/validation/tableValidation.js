@@ -1,13 +1,14 @@
 const Joi = require("joi");
+const { min } = require("lodash");
 
 exports.validateAddTable = (_reqBody) => {
     let schemaJoi = Joi.object({
         status: Joi.string().min(2).max(99).required(),
         seats: Joi.number().min(1).max(50).required(),
-        tableNumber: Joi.number().required(),
+        tableNumber: Joi.number().min(1).required(),
         location: {
-            x: Joi.number().required(),
-            y: Joi.number().required()
+            x: Joi.number().min(1).required(),
+            y: Joi.number().min(1).required()
         },
 
 
