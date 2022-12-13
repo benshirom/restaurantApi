@@ -1,6 +1,6 @@
 const { RestaurantModel } = require("../models/restaurantModel");
 const { orderModel } = require("../models/orderModel");
-const { ItemOrderModel } = require("../models/itemOrderModel");
+const { itemOrderModel } = require('../models/itemOrderModel');
 const { validateOrderByWorker, validateOrderByCustumer } = require("../validation/orderValidation");
 const { validateItemOrder } = require("../validation/itemOrderValidation");
 
@@ -87,7 +87,7 @@ exports.OrderCtrl = {
     try {
       let { orderId,itemMenuId } = req.params;
 
-      let item = new ItemOrderModel(req.body);
+      let item = new itemOrderModel(req.body);
       await item.save()
       let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': itemMenuId } });
       res.json(order);
