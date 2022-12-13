@@ -7,4 +7,4 @@ let itemOrderSchema = new mongoose.Schema({
 
     
 },{timestamps:true})
-exports.itemOrderModel = mongoose.model("itemorders", itemOrderSchema);
+exports.ItemOrderModel = mongoose.model("itemorders", itemOrderSchema);
