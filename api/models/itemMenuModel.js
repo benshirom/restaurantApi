@@ -6,7 +6,7 @@ let itemMenuSchema = new mongoose.Schema({
     info: { type: String, default: "" },
     img: { type: String, default: "" },
     video: { type: String, default: "" },
-    calories: { type: String, default: "" },
+    calories: { type: Number, default: 0 },
     price: { type: Number, default: 0 },
     category: String,
     subCategory: { type: String, default: "" },

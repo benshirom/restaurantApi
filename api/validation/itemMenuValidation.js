@@ -7,7 +7,7 @@ exports.validateItemMenu = (_reqBody) => {
         img: Joi.string().min(2).max(999).allow(null, ""),
         video: Joi.string().min(2).max(999).allow(null, ""),
         price: Joi.number().min(0).required(),
-        calories: Joi.string().allow(null, 0),
+        calories: Joi.number().allow(null, 0),
         category:Joi.string().min(2).max(20).required(),
         subCategory: Joi.string().min(2).max(20).allow(null, "")
         
