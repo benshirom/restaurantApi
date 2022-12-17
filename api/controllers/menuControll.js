@@ -20,7 +20,7 @@ exports.MenuCtrl = {
         let validBody = validateItemMenu(req.body);
         let {restId } = req.params
 
-        if (validBody.error) return res.status(400).json(validBody.error.details);
+        if (validBody.error) return res.status(401).json(validBody.error.details);
         // let {workId}= req.params
         try {
             let itemMenu = new  itemMenuModel(req.body);

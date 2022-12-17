@@ -156,28 +156,28 @@ exports.RestaurantCtrl = {
       res.status(500).json({ msg: "err", err })
     }
   },
-  getCanvas: async (req, res) => { 
-    let { resId } = req.params
-try {
-  let data = await RestaurantModel.findOne({ _id: resId })
-  res.json(data.tablesCanvas);
-
-} catch (err) {
-  console.log(err)
-  res.status(500).json({ msg: "err", err })
-}
-
-  },
-  setCanvas: async (req, res) => { 
+  getCanvas: async (req, res) => {
     let { resId } = req.params
     try {
-      if(!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
-      let data = await RestaurantModel.updateOne({ _id: resId },{tablesCanvas:req.body.canvas})
+      let data = await RestaurantModel.findOne({ _id: resId })
+      res.json(data.tablesCanvas);
+
+    } catch (err) {
+      console.log(err)
+      res.status(500).json({ msg: "err", err })
+    }
+
+  },
+  setCanvas: async (req, res) => {
+    let { resId } = req.params
+    try {
+      if (!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
+      let data = await RestaurantModel.updateOne({ _id: resId }, { tablesCanvas: req.body.canvas })
       res.json(data);
 
     } catch (error) {
       console.log(err)
-  res.status(500).json({ msg: "err", err })
+      res.status(500).json({ msg: "err", err })
     }
 
   },
