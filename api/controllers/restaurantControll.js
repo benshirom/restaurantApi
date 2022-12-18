@@ -169,7 +169,7 @@ exports.RestaurantCtrl = {
 
   },
   setCanvas: async (req, res) => {
-    let validBody = validateTablesCanvas(req.body);
+    // let validBody = validateTablesCanvas(req.body);
     // if (validBody.error) {
     //   return res.status(400).json({ msg: "Need to send body" });
     // }
