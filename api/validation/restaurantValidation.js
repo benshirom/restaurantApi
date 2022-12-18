@@ -34,7 +34,6 @@ exports.validateEditRestaurant = (_reqBody) => {
 }
 exports.validateTablesCanvas = (_reqBody) => {
     let schemaJoi = Joi.object({
-        
         canvas: Joi.required(),
         height: Joi.string().required(),
         width: Joi.string().required()

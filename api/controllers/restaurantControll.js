@@ -176,8 +176,8 @@ exports.RestaurantCtrl = {
 
     let { resId } = req.params
 
+    if (!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
     try {
-      if (!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
       let data = await RestaurantModel.updateOne({ _id: resId }, { tablesCanvas: req.body })
       res.json(data);
 
