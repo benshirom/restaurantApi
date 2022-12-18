@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const { sendVerificationEmail } = require("../helpers/userHelper");
 const { RestaurantModel } = require("../models/restaurantModel");
-const { validateRestaurant, validateEditRestaurant } = require("../validation/restaurantValidation");
+const { validateRestaurant, validateEditRestaurant, validateTablesCanvas } = require("../validation/restaurantValidation");
 const { VerificationModel } = require("../models/verificationModel");
 const { UserModel } = require("../models/userModel");
 
@@ -169,10 +169,16 @@ exports.RestaurantCtrl = {
 
   },
   setCanvas: async (req, res) => {
+    let validBody = validateTablesCanvas(req.body);
+    if (validBody.error) {
+      return res.status(400).json({ msg: "Need to send body" });
+    }
+
     let { resId } = req.params
+
     try {
       if (!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
-      let data = await RestaurantModel.updateOne({ _id: resId }, { tablesCanvas: req.body.canvas })
+      let data = await RestaurantModel.updateOne({ _id: resId }, { tablesCanvas: req.body })
       res.json(data);
 
     } catch (error) {
