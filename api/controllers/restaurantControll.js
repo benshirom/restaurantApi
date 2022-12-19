@@ -106,9 +106,20 @@ exports.RestaurantCtrl = {
       let { resId } = req.params
       let data = await RestaurantModel.findOne({ _id: resId })
         .populate({ path: 'menu', model: 'itemmenus' })
-        .populate({ path: 'orders', model: 'orders' })
-        .populate({ path: 'tables', model: 'tables' })
-        .populate({ path: 'workersArray', model: 'users' });
+        .populate({
+          path: 'orders',
+          populate: {
+            path: 'orderItems', populate: {
+              path: 'itemMenuId', model: 'itemmenus'
+
+            }, 
+            model: 'itemorders'
+          },
+          model: 'orders'
+        })
+  
+      .populate({ path: 'tables', model: 'tables' })
+      .populate({ path: 'workersArray', model: 'users' });
       res.json(data);
     }
     catch (err) {
