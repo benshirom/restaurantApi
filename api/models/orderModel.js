@@ -4,7 +4,7 @@ let orderSchema = new mongoose.Schema({
     //Item order Id
     orderItems: [mongoose.ObjectId],
     status: String,
-    estimatedTime: Date ,
+    estimatedTime: {type:Date , default: ""} ,
     discount: { type: Number, default: 0 },
     finalPrice: { type: Number, default: 0 },
     note:{ type:String, default:""},
