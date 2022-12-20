@@ -28,7 +28,7 @@ exports.createToken = (_id, role, jobs) => {
       from: config.authEmail,
       to: _email,
       subject: "Verify Your Email",
-      html: `<p>Verify Your Email </p><p> click <a href=${config.currentUrl + "/users/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
+      html: `<p>Verify Your Email </p><p> click <a href=${config.ReactUrl + "/users/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
     };
   
     return mailOptions;
@@ -37,7 +37,7 @@ exports.createToken = (_id, role, jobs) => {
       from: config.authEmail,
       to: _email,
       subject: "Verify Your Email manager",
-      html: `<p>Verify Your Email manager </p><p> click <a href=${config.currentUrl + "/users/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
+      html: `<p>Verify Your Email manager </p><p> click <a href=${config.ReactUrl + "/users/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
     };
   
     return mailOptions;
@@ -57,7 +57,7 @@ exports.createToken = (_id, role, jobs) => {
       from: config.authEmail,
       to: _email,
       subject: "Verify Your Email restaurant",
-      html: `<p>Verify Your Email restaurant </p><p> click <a href=${config.currentUrl + "/restaurants/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
+      html: `<p>Verify Your Email restaurant </p><p> click <a href=${config.ReactUrl + "/restaurants/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
     };
   
     return mailOptions;
