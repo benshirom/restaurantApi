@@ -11,7 +11,7 @@ router.get("/verified", RestaurantCtrl.verifiedRestaurant)
 
 router.post("/create", authManager, RestaurantCtrl.createRestaurant)
 router.get("/byId/:resId", authWorker, RestaurantCtrl.getRestaurant) 
-router.get("/myrestaurants", authWorker, RestaurantCtrl.getMyRestaurants)
+router.get("/myrestaurants", authManager, RestaurantCtrl.getMyRestaurants)
 router.get("/myworks", authWorker, RestaurantCtrl.getMyWorkPlaces)
 router.put("/editRest/:editId", authManager, RestaurantCtrl.editRestaurant)
 router.get("/getCanvas/:resId",authWorker,RestaurantCtrl.getCanvas)
