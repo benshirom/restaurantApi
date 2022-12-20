@@ -142,7 +142,7 @@ exports.RestaurantCtrl = {
   getMyWorkPlaces: async (req, res) => {
     try {
       console.log(req.tokenData._id)
-      let { worker } = await UserModel.findById(req.tokenData._id).populate({ path: 'restaurantID', model: 'restaurants' });
+      let { worker } = await UserModel.findById(req.tokenData._id).populate({ path: 'worker.restaurantID', model: 'restaurants' });
       res.json(worker.restaurantID);
     }
     catch (err) {
