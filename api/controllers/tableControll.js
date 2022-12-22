@@ -16,7 +16,7 @@ exports.TableCtrl={
             let rest = await RestaurantModel.updateOne({ _id: restId }, { $push: { 'tables': Table._id } })
             console.log(rest)
 
-            res.json(Table)
+            res.json(Table._id)
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })
