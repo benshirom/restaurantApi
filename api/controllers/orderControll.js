@@ -54,7 +54,7 @@ exports.OrderCtrl = {
 
       let orders = await RestaurantModel.updateOne({ _id: restId },{ $push: { 'orders': newOrder._id } }
       );
-      res.json(orders);
+      res.json(newOrder);
     } catch (err) {
       console.log(err);
       res.status(500).json({ msg: "there error try again later", err });
