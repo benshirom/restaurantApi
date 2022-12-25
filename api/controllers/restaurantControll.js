@@ -112,14 +112,20 @@ exports.RestaurantCtrl = {
             path: 'orderItems', populate: {
               path: 'itemMenuId', model: 'itemmenus'
 
-            }, 
+            },
             model: 'itemorders'
           },
           model: 'orders'
         })
-  
-      .populate({ path: 'tables', model: 'tables' })
-      .populate({ path: 'workersArray', model: 'users' });
+
+        .populate({
+          path: 'tables',
+          populate: {
+            path: 'orderID', model: 'orders'
+          },
+          model: 'tables'
+        })
+        .populate({ path: 'workersArray', model: 'users' });
       res.json(data);
     }
     catch (err) {
