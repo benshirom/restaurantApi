@@ -69,20 +69,20 @@ exports.TableCtrl={
               res.status(500).json({ msg: "there error try again later", err })
           }
     },
-    editLocation: async (req, res) => {
-        let validBody = validateEditTableLocation(req.body);
+    // editLocation: async (req, res) => {
+    //     let validBody = validateEditTableLocation(req.body);
 
-        if (validBody.error) return res.status(400).json(validBody.error.details);
-          let { editTableId } = req.params
-          try {
-              console.log(req.body)
-              let EditTable = await TableModel.updateOne({ _id: editTableId },{$set:{'location':req.body.location}})
-              res.json(EditTable)
-          } catch (err) {
-              console.log(err);
-              res.status(500).json({ msg: "there error try again later", err })
-          }
-    },
+    //     if (validBody.error) return res.status(400).json(validBody.error.details);
+    //       let { editTableId } = req.params
+    //       try {
+    //           console.log(req.body)
+    //           let EditTable = await TableModel.updateOne({ _id: editTableId },{$set:{'location':req.body.location}})
+    //           res.json(EditTable)
+    //       } catch (err) {
+    //           console.log(err);
+    //           res.status(500).json({ msg: "there error try again later", err })
+    //       }
+    // },
     // editTableOwenr: async (req, res) => {
    
     //       let { editTableId,orderId } = req.params

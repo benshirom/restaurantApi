@@ -13,13 +13,13 @@ let orderSchema = new mongoose.Schema({
     // need to add info for order and for orderItems
     byWorker: {
         // tableNumber: Number,
-        workerID: mongoose.ObjectId,
+        workerID: { type:mongoose.ObjectId, default:""},
     },
     byCustumer:
     {
         isDelivery:{type:Boolean, default:false},
         isPaid: { type: Boolean, default: false },
-        custumerID: mongoose.ObjectId,
+        custumerID: { type:mongoose.ObjectId, default:""},
     },
   
 },{timestamps:true})
