@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 let tableSchema = new mongoose.Schema({
     //order id
-    orderID: mongoose.ObjectId||null, 
+    orderID: { type:mongoose.ObjectId, default:null}, 
     seats:Number,
     isCatched:{type:Boolean,default:false},
     status:String,
