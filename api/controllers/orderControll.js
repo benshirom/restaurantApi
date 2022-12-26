@@ -23,9 +23,9 @@ exports.OrderCtrl = {
       // Create filter object for the match option
       let filter = { $and: [] };
       // Filter by active state
-      if (active == true) {
+      if (active == "t") {
         filter.$and.push({ active: true });
-      } else if (active === false) {
+      } else if (active === "f") {
         filter.$and.push({ active: false });
       }
       
