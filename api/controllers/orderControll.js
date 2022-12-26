@@ -5,19 +5,112 @@ const { validateOrderByWorker, validateOrderByCustumer } = require("../validatio
 const { validateItemOrder } = require("../validation/itemOrderValidation");
 
 exports.OrderCtrl = {
-  getOrders: async (req, res) => {
-    let { restId } = req.params;
-    try {
-      let restaurant = await RestaurantModel.findOne({ _id: restId }).populate({
-        path: "orders",
-        model: "orders",
-      });
-      res.json(restaurant.orders);
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ msg: "there error try again later", err });
+ 
+  
+
+
+    getOrders: async (req, res) => {
+      let { restId } = req.params;
+      
+      let perPage = req.query.perPage || 50;
+      let page = req.query.page || 1;
+      let sort = req.query.sort || "_id"
+      let reverse = req.query.reverse == "yes" ? -1 : 1;
+      let active = req.query.active;
+      let ownerType = req.query.ownerType;
+      let orderType = req.query.orderType;
+      console.log(active)
+      // Create filter object for the match option
+      let filter = { $and: [] };
+      // Filter by active state
+      if (active == true) {
+        filter.$and.push({ active: true });
+      } else if (active === false) {
+        filter.$and.push({ active: false });
+      }
+      
+      // Filter by order type
+      if (orderType === "table") {
+        filter.$and.push({ isTA: false, "byCustumer.isDelivery": false });
+      } else if (orderType === "delivery") {
+        filter.$and.push({ "byCustumer.isDelivery": true });
+      } else if (orderType === "T.A") {
+        filter.$and.push({ isTA: true });
+      } else if (orderType === "both") {
+        filter.$and.push({ $or: [{ isTA: false, "byCustumer.isDelivery": false }, { "byCustumer.isDelivery": true }, { isTA: true }] });
+      }
+      
+      // Filter by owner type
+      if (ownerType === "customer") {
+        filter.$and.push({ "byCustumer.custumerID": { $ne: null } });
+      } else if (ownerType === "worker") {
+        filter.$and.push({ "byWorker.workerID": { $ne: null } });
+      } else if (ownerType === "both") {
+        filter.$and.push({ $or: [{ "byCustumer.custumerID": { $ne: null } }, { "byWorker.workerID": { $ne: null } }] });
+      }
+      
+      // Set default filter if none of the query parameters were specified
+      if (filter.$and.length === 0) {
+        filter = {};
+      } try {
+        console.log(filter);
+        let {orders} = await RestaurantModel.findOne({ _id: restId }).populate({
+          path: "orders",
+          match: filter,
+          options: {
+            limit: perPage,
+            sort: { [sort]: reverse },
+            
+          },
+              model: "orders"
+            });
+            
+        res.json(orders);
+      } catch (err) {
+        console.log(err);
+        res.status(500).json({ msg: "there error try again later", err });
+      }
     }
-  },
+  ,
+  // getOrders: async (req, res) => {
+
+  //   let { restId } = req.params;
+  //   // try {
+  //   //   let restaurant = await RestaurantModel.findOne({ _id: restId }).populate({
+  //   //     path: "orders",
+  //   //     model: "orders",
+  //   //   });
+  //   //   res.json(restaurant.orders);
+    
+  //   // }
+  //   let perPage = req.query.perPage || 50;
+  //   let page = req.query.page || 1;
+  //   let sort = req.query.sort || "_id"
+  //   let reverse = req.query.reverse == "yes" ? -1 : 1;
+  //   let isActive = req.query.active == "yes" ? true : false;
+  //   try {
+  //     let queryS = req.query.s;
+  //     let searchReg = new RegExp(queryS, "i")
+  //     let {orders} = await RestaurantModel.findOne({ _id: restId }).populate({
+  //           path: "orders",
+  //           match: {$and:[{active:isActive},{'byCustumer.custumerID':null}]},
+  //           options: {
+  //             limit: perPage,
+  //             sort: { [sort]: reverse },
+
+  //           },
+  //           model: "orders",
+  //         })
+  //       // .limit(perPage)
+  //       // .skip((page - 1) * perPage)
+  //       // .sort({ [sort]: reverse })
+  //     res.json(orders);
+  //   }
+  //    catch (err) {
+  //     console.log(err);
+  //     res.status(500).json({ msg: "there error try again later", err });
+  //   }
+  // },
   // searchOrders: async (req, res) => {
   //   let perPage = req.query.perPage || 10;
   //   let page = req.query.page || 1;
