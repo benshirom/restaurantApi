@@ -27,6 +27,8 @@ exports.OrderCtrl = {
         filter.$and.push({ active: true });
       } else if (active === "f") {
         filter.$and.push({ active: false });
+      }else if (active === "b") {
+        filter.$and.push({ $or: [{ active: true }, { active: false }] });
       }
       
       // Filter by order type
