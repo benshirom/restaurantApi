@@ -5,7 +5,7 @@ const { auth, authAdmin, authWorker, authManager, authWaiter } = require("../mid
 
 const router = express.Router();
 
-// router.get("/tables" ,authWorker,TableCtrl.getTables) 
+router.get("/:tableID" ,authWorker,TableCtrl.getTable) 
 
 router.patch("/create/:restId" ,authManager,TableCtrl.createNewTable) 
 router.delete("/remove/:restId/:tableId" ,authManager,TableCtrl.removeTableFromRestaurant) 

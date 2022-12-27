@@ -117,7 +117,6 @@ exports.RestaurantCtrl = {
           },
           model: 'orders'
         })
-
         .populate({
           path: 'tables',
           populate: {

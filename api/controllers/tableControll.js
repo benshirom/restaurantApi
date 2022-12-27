@@ -4,6 +4,30 @@ const { validateAddTable,validateEditTable ,validateEditTableLocation } = requir
 
 exports.TableCtrl={
    
+    getTable: async (req, res) => {
+        // let validBody = validateAddTable(req.body);
+
+        // if (validBody.error) return res.status(400).json(validBody.error.details);
+        let {tableID } = req.params
+        try {
+            
+            let table = await TableModel.findById(tableID)
+            .populate({
+                path: 'orderID',
+                populate: {
+                  path: 'orderItems', populate: {path:'itemMenuId',model:'itemmenus'},
+                   model: 'itemorders'
+                },
+                model: 'orders'
+              })
+            console.log(table)
+
+            res.json(table)
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ msg: "there error try again later", err })
+        }
+    },
     createNewTable: async (req, res) => {
         let validBody = validateAddTable(req.body);
 
