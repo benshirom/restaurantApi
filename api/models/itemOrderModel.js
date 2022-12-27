@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 let itemOrderSchema = new mongoose.Schema({
 
-    itemMenuId: mongoose.ObjectId,
+    itemMenuId: { type:mongoose.ObjectId, default:null},
     
     note:{ type:String, default:""},
 
