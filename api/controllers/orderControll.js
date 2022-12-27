@@ -183,8 +183,9 @@ exports.OrderCtrl = {
       let { orderId,itemMenuId } = req.params;
 
       let item = new itemOrderModel(req.body);
+      item.itemMenuId=itemMenuId
       await item.save()
-      let order = await orderModel.updateOne({ _id: orderId },{ $setOnInsert: { 'orderItems': itemMenuId } });
+      let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': itemMenuId } });
       res.json(order);
 
     } catch (err) {
