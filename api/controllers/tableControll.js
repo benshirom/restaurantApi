@@ -62,7 +62,7 @@ exports.TableCtrl={
           let { editTableId,orderID } = req.params
           try {
               console.log(req.body)
-              let EditTable = await TableModel.updateOne({ _id: editTableId },[{$set:{'isCatched':req.body.isCatched,'orderID':orderID}}])
+              let EditTable = await TableModel.updateOne({ _id: editTableId },[{$set:{'isCatched':req.body.isCatched,'orderID':orderID ,status:req.body.status}}])
               res.json(EditTable)
           } catch (err) {
               console.log(err);
