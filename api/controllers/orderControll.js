@@ -185,7 +185,7 @@ exports.OrderCtrl = {
       let item = new itemOrderModel(req.body);
       item.itemMenuId=itemMenuId
       await item.save()
-      let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': itemMenuId } });
+      let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': item._id } });
       res.json(order);
 
     } catch (err) {
