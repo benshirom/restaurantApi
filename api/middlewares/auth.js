@@ -172,14 +172,14 @@ exports.authManager = (req, res, next) => {
     if (!decodeToken.jobs) {
       return res.status(401).json({ msg: "Token invalid or expired or not worker." })
     } else {
-      decodeToken.jobs.forEach(job => {
-        if (job == manager) {
-          req.tokenData = decodeToken;
-          next();
-        }
-      });
+      if (decodeToken.jobs.includes(manager)) {
 
-      return res.status(401).json({ msg: "Token is not manager." })
+        req.tokenData = decodeToken;
+        next();
+      }else{
+        return res.status(401).json({ msg: "Token is not manager." })
+
+      }
     }
 
   }
