@@ -62,13 +62,14 @@ exports.authWaiter = (req, res, next) => {
       return res.status(401).json({ msg: "Token invalid or expired or not worker." })
     }
     else {
-      decodeToken.jobs.forEach(job => {
-        if (job == waiter || job == manager || job == shiftManager) {
-          req.tokenData = decodeToken;
-          next();
-        }
-      });
-      return res.status(401).json({ msg: "Token is not Waiter." })
+      if (decodeToken.jobs.includes(manager)||decodeToken.jobs.includes(shiftManager)||decodeToken.jobs.includes(waiter)) {
+
+        req.tokenData = decodeToken;
+        next();
+      }else{
+        return res.status(401).json({ msg: "Token is not waiter." })
+
+      }
     }
   }
   catch (err) {
@@ -90,13 +91,14 @@ exports.authBartender = (req, res, next) => {
       return res.status(401).json({ msg: "Token invalid or expired or not worker." })
     }
     else {
-      decodeToken.jobs.forEach(job => {
-        if (job == bartender || job == manager || job == shiftManager) {
-          req.tokenData = decodeToken;
-          next();
-        }
-      });
-      return res.status(401).json({ msg: "Token is not Bartender." })
+      if (decodeToken.jobs.includes(manager)||decodeToken.jobs.includes(shiftManager)||decodeToken.jobs.includes(bartender)) {
+
+        req.tokenData = decodeToken;
+        next();
+      }else{
+        return res.status(401).json({ msg: "Token is not bartender." })
+
+      }
     }
   }
   catch (err) {
@@ -118,13 +120,14 @@ exports.authChef = (req, res, next) => {
       return res.status(401).json({ msg: "Token invalid or expired or not worker." })
     }
     else {
-      decodeToken.jobs.forEach(job => {
-        if (job == chef || job == manager) {
-          req.tokenData = decodeToken;
-          next();
-        }
-      });
-      return res.status(401).json({ msg: "Token is not Chef." })
+      if (decodeToken.jobs.includes(manager)||decodeToken.jobs.includes(chef)) {
+
+        req.tokenData = decodeToken;
+        next();
+      }else{
+        return res.status(401).json({ msg: "Token is not chef." })
+
+      }
     }
   }
   catch (err) {
@@ -146,13 +149,14 @@ exports.authShiftManager = (req, res, next) => {
       return res.status(401).json({ msg: "Token invalid or expired or not worker." })
     }
     else {
-      decodeToken.jobs.forEach(job => {
-        if (job == shiftManager || job == manager) {
-          req.tokenData = decodeToken;
-          next();
-        }
-      });
-      return res.status(401).json({ msg: "Token is not shiftmanager." })
+      if (decodeToken.jobs.includes(manager)||decodeToken.jobs.includes(shiftManager)) {
+
+        req.tokenData = decodeToken;
+        next();
+      }else{
+        return res.status(401).json({ msg: "Token is not shiftManager." })
+
+      }
     }
   }
   catch (err) {
