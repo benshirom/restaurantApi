@@ -1,18 +1,19 @@
 const { json } = require("express");
+const { number } = require("joi");
 const mongoose = require("mongoose");
 
 let restaurantSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    phone: String,
-    info:String,
+    name: { type: String, default: "" },
+    email:{ type: String, default: "" },
+    phone: { type: String, default: "" },
+    info:{ type: String, default: "" },
     address: {
         country:{type: String, default: ""} ,
         city:{type: String, default: ""} ,
         Street: {type: String, default: ""},
-        num: Number
+        num: { type: Number, default: 1 }
     },
-    creatorID: mongoose.ObjectId,
+    creatorID: { type:mongoose.ObjectId, default:null},
  
     gallry:{
         img:[{type: String, default: ""}],

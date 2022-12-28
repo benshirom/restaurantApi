@@ -6,7 +6,13 @@ const jwt = require("jsonwebtoken");
 const { config } = require("../config/secret")
 const nodemailer = require("nodemailer");
 const { VerificationModel } = require("../models/verificationModel");
-let transporter = nodemailer.createTransport({
+const { mailOptions } = require("./mailHelper");
+exports.createToken = (_id, role, jobs) => {
+  //24h
+  let token = jwt.sign({ _id, role, jobs }, config.tokenSecret, { expiresIn: "1440mins" });
+  return token;
+};
+const transporter = nodemailer.createTransport({
 
   host: 'smtp.gmail.com',
   port: 465,
@@ -16,70 +22,11 @@ let transporter = nodemailer.createTransport({
     pass: config.authPass
   }
 });
-exports.createToken = (_id, role, jobs) => {
-  let token = jwt.sign({ _id, role, jobs }, config.tokenSecret, { expiresIn: "1440mins" });
-  return token;
-}
 
- const mailOptions= (emailType,_id, _uniqueString, _email) => { 
-  if(emailType=="user"){
-
-    const mailOptions = {
-      from: config.authEmail,
-      to: _email,
-      subject: "Verify Your Email",
-      html: `<p>Verify Your Email </p><p> click <a href=${config.currentUrl + "/users/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
-    };
-  
-    return mailOptions;
-  }else if(emailType=="manager"){
-    const mailOptions = {
-      from: config.authEmail,
-      to: _email,
-      subject: "Verify Your Email manager",
-      html: `<p>Verify Your Email manager </p><p> click <a href=${config.currentUrl + "/users/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
-    };
-  
-    return mailOptions;
-  }else if(emailType=="worker"){
-    const mailOptions = {
-      from: config.authEmail,
-      to: _email,
-      subject: "Verify Your Email worker",
-      //צריך לשנות ראוט של מילוי פרטים
-      html: `<p>Verify Your Email worker </p><p> click <a href=${config.ReactUrl + "/fillDetales/" + _id }> here</a> </p>`
-    };
-  
-    return mailOptions;
-  }
-  else if(emailType=="restaurant"){
-    const mailOptions = {
-      from: config.authEmail,
-      to: _email,
-      subject: "Verify Your Email restaurant",
-      html: `<p>Verify Your Email restaurant </p><p> click <a href=${config.currentUrl + "/restaurants/verify/" + _id + "/" + _uniqueString}> here</a> </p>`
-    };
-  
-    return mailOptions;
-  }
-  else if(emailType=="resetpassword"){
-    const mailOptions = {
-      from: config.authEmail,
-      to: _email,
-      subject: "Verify Your Email resetpassword",
-            //צריך לשנות את הראוט לשינוי סיסמה
-
-      html: `<p>Verify Your Email_uniqueString :  ${_uniqueString}<br>  id : ${_id} </p><p> click <a href=${config.ReactUrl + "/resetPassword/" + _id + "/" + _uniqueString}> here</a> </p>`
-    };
-  
-    return mailOptions;
-  }
-  }
+ 
 
 exports.sendVerificationEmail = async (emailType,{ _id, email }, res) => {
-
-  // let request = await VerificationModel.findOne({id:_id})
-  // if(request) await VerificationModel.deleteOne({id:_id})  
+ 
   console.log("email " + email)
   console.log("id " + _id)
   const uniqueString = uuidv4() + _id;

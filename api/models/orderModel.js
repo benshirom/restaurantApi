@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 let orderSchema = new mongoose.Schema({
     //Item order Id
     orderItems: [mongoose.ObjectId],
-    status: String,
+    status:{ type: String, default: "" },
     estimatedTime: {type:Date , default: ""} ,
     discount: { type: Number, default: 0 },
     finalPrice: { type: Number, default: 0 },

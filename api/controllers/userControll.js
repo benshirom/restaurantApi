@@ -21,7 +21,7 @@ exports.userCtrl = {
 
 
 
-      res.json({data:userInfo,msg:"success"});
+      res.json({ data: userInfo, msg: "success" });
 
 
     }
@@ -64,17 +64,28 @@ exports.userCtrl = {
     }
     try {
       let workerId = req.params.workerId;
-      let workerInfo = await UserModel.findOne({ _id: workerId })
-      if (workerInfo.verified) {
-        return res.status(400).json({ msg: "User has already verified and filled in the details" })
+      let workerInfo = await UserModel.findOneAndUpdate(
+        {
+          $and: [
+            { _id: workerId },
+            { verified: false }
+          ]
+        },
+        {
+          $set: {
+            worker: { pin: req.body.worker.pin },
+            phone: req.body.phone,
+            password: await bcrypt.hash(req.body.password, 10),
+            fullName: req.body.fullName,
+            verified: true
+          }
+        },
+        { new: true }
+      );
+
+      if (!workerInfo) {
+        return res.status(400).json({ msg: "User not found or has already been verified" });
       }
-      let hashPass = await bcrypt.hash(req.body.password, 10);
-      workerInfo.worker.pin = req.body.worker.pin
-      workerInfo.phone = req.body.phone
-      workerInfo.password = hashPass
-      workerInfo.fullName = req.body.fullName
-      workerInfo.verified = true;
-      let workerUpdate = await UserModel.updateOne({ _id: workerId }, workerInfo)
 
       workerUpdate.password = "*******";
       console.log(workerUpdate);
@@ -145,7 +156,7 @@ exports.userCtrl = {
     }
     catch (err) {
       console.log(err)
-      res.status(500).json({ msg: "err", err })
+      res.status(500).json({ msg: "user edit fail", err })
     }
   },
   deleteUser: async (req, res) => {
@@ -161,17 +172,12 @@ exports.userCtrl = {
       else if (req.tokenData._id == delId) {
         userInfo = await UserModel.deleteOne({ _id: req.tokenData._id }, { password: 0 });
       }
-      req.tokenData.jobs.forEach(async job => {
-        if (job == "manager") {
-          userInfo = await UserModel.deleteOne({ _id: delId }, { password: 0 });
-        }
-
-      });
+     
       res.json(userInfo);
     }
     catch (err) {
       console.log(err)
-      res.status(500).json({ msg: "err", err })
+      res.status(500).json({ msg: "delete user fail", err })
     }
   },
   deleteWorker: async (req, res) => {
@@ -193,7 +199,7 @@ exports.userCtrl = {
     }
     catch (err) {
       console.log(err)
-      res.status(500).json({ msg: "err", err })
+      res.status(500).json({ msg: "delete Worker fail", err })
     }
   }
 }

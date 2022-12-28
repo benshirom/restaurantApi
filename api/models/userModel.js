@@ -18,7 +18,7 @@ let userSchema = new mongoose.Schema({
   active: { type: Boolean, default: true },
 
   worker: {
-    pin: {type: String, default:null},
+    pin: {type: String, default:""},
     jobs: [{ type: String }],
     restaurantID: [mongoose.ObjectId],
 
@@ -28,7 +28,7 @@ let userSchema = new mongoose.Schema({
       country:{type: String, default: ""} ,
       city:{type: String, default: ""} ,
       Street: {type: String, default: ""},
-      num: {type: Number, default:null}
+      num: {type: Number, default:1}
   },
     
 
