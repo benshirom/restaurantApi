@@ -63,6 +63,12 @@ exports.OrderCtrl = {
             limit: perPage,
             sort: { [sort]: reverse },
             
+          },populate: {
+            path: 'orderItems', populate: {
+              path: 'itemMenuId', model: 'itemmenus'
+
+            },
+            model: 'itemorders'
           },
               model: "orders"
             });
