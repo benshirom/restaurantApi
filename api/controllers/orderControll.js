@@ -186,13 +186,13 @@ exports.OrderCtrl = {
       return res.status(400).json({ msg: "Need to send body" });
     }
     try {
-      let { orderId,itemMenuId } = req.params;
+      let { orderId,itemMenuId,price } = req.params;
 
       let item = new itemOrderModel(req.body);
       item.itemMenuId=itemMenuId
       await item.save()
       
-      let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': item._id }});
+      let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': item._id }, $inc: { 'finalPrice': price }});
       res.json(order);
     } catch (err) {
       console.log(err);
