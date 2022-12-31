@@ -192,7 +192,7 @@ exports.OrderCtrl = {
       item.itemMenuId=itemMenuId
       await item.save()
       
-      let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': item._id },$inc: { 'finalPrice': item.itemMenuId.price }});
+      let order = await orderModel.updateOne({ _id: orderId },{ $push: { 'orderItems': item._id }});
       res.json(order);
     } catch (err) {
       console.log(err);
