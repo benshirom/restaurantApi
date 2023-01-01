@@ -218,7 +218,7 @@ exports.RestaurantCtrl = {
       let data = await RestaurantModel.updateOne({ _id: resId }, { $push: { 'gallry.img': req.body.img} })
       res.json(data);
 
-    } catch (error) {
+    } catch (err) {
       console.log(err)
       res.status(500).json({ msg: "err", err })
     }
