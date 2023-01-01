@@ -1,5 +1,5 @@
 const express= require("express");
-const {auth, authAdmin, authManager} = require("../middlewares/auth");
+const {auth, authAdmin, authManager, authWorker} = require("../middlewares/auth");
 const { authCtrl } = require("../controllers/authControll");
 const { userCtrl } = require("../controllers/userControll");
 const router = express.Router();
@@ -21,6 +21,7 @@ router.post("/manager",authCtrl.signUpManager)
 router.post("/worker/:restId",authManager,authCtrl.signUpWorker)
 router.patch("/worker/:workerId",userCtrl.WorkerFillDetails)
 router.patch("/changeJob/:editId", authManager, userCtrl.editWorkerJob)
+router.patch("/editUser/:editId", authWorker, userCtrl.editUser)
 router.delete("/deleteWorker/:delId/:restId", authManager, userCtrl.deleteWorker)
 //ערכיבה למנהל ועריכה לעובד 
 
