@@ -204,4 +204,24 @@ exports.RestaurantCtrl = {
     }
 
   },
+  addImageToGallery: async (req, res) => {
+    console.log(req.body)
+    // let validBody = validateTablesCanvas(req.body);
+    if (!req.body.img) {
+      return res.status(400).json({ msg: "Need to send imageUrl" });
+    }
+
+    let { resId } = req.params
+
+    // if (!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
+    try {
+      let data = await RestaurantModel.updateOne({ _id: resId }, { $push: { 'gallry.img': req.body.img} })
+      res.json(data);
+
+    } catch (error) {
+      console.log(err)
+      res.status(500).json({ msg: "err", err })
+    }
+
+  },
 }
