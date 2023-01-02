@@ -15,7 +15,7 @@ let restaurantSchema = new mongoose.Schema({
     },
     creatorID: { type:mongoose.ObjectId, default:null},
  
-    gallry:{
+    gallery:{
         img:[{type: String, default: ""}],
         video:[{type: String, default: ""}],
     },

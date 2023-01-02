@@ -215,7 +215,7 @@ exports.RestaurantCtrl = {
 
     // if (!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
     try {
-      let data = await RestaurantModel.updateOne({ _id: resId }, { $push: { 'gallry.img': req.body.img} })
+      let data = await RestaurantModel.updateOne({ _id: resId }, { $push: { 'gallery.img': req.body.img} })
       res.json(data);
 
     } catch (err) {
