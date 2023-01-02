@@ -10,7 +10,7 @@ exports.validateRestaurant = (_reqBody) => {
             country: Joi.string().min(2).max(99),
             city: Joi.string().min(2).max(99),
             Street: Joi.string().min(2).max(99),
-            num: Joi.number().min(1).max(50)   
+            num: Joi.number().min(1).max(500)   
              },
         info: Joi.string().min(3).max(500).allow(null, ""),
     })
@@ -27,7 +27,7 @@ exports.validateEditRestaurant = (_reqBody) => {
             country: Joi.string().min(2).max(50).allow(null,""),
             city: Joi.string().min(2).max(50).allow(null,""),
             Street: Joi.string().min(2).max(50).allow(null,""),
-            num: Joi.number().min(1).max(50).allow(null,"")
+            num: Joi.number().min(1).max(500).allow(null,"")
           },
     })
     return schemaJoi.validate(_reqBody);

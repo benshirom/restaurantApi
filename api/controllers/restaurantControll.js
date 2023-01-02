@@ -156,7 +156,7 @@ exports.RestaurantCtrl = {
     }
   },
   editRestaurant: async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     let validBody = validateEditRestaurant(req.body);
     if (validBody.error) {
       return res.status(400).json({ msg: "Need to send body" });
@@ -168,7 +168,7 @@ exports.RestaurantCtrl = {
       res.json(resUpdate);
     }
     catch (err) {
-      console.log(err)
+      // console.log(err)
       res.status(500).json({ msg: "err", err })
     }
   },
