@@ -22,7 +22,7 @@ exports.validateEditRestaurant = (_reqBody) => {
     let schemaJoi = Joi.object({
         name: Joi.string().min(2).max(99).required(),
         phone: Joi.string().min(10).max(12).pattern(/^[0-9]+$/).required(),
-        info: Joi.string().min(3).max(500).required(),
+        info: Joi.string().min(3).max(500).allow(null, ""),
         address: {
             country: Joi.string().min(2).max(50).allow(null,""),
             city: Joi.string().min(2).max(50).allow(null,""),
