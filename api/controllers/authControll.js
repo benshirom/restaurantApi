@@ -130,7 +130,7 @@ exports.authCtrl = {
       res.status(500).json({ msg: "err", err })
     }
   },
-
+// צריך לתקן CATCH TO L וגם ליצר אחד ל'םרלקר שאחרי אימות ישלח לדף מילוי פרטים 
   verifyUser: async (req, res) => {
     let { userId, uniqueString } = req.params;
     console.log("in")

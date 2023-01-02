@@ -11,6 +11,7 @@ router.get("/verified", RestaurantCtrl.verifiedRestaurant)
 
 router.post("/create", authManager, RestaurantCtrl.createRestaurant)
 router.get("/byId/:resId", authWorker, RestaurantCtrl.getRestaurant) 
+router.get("/workersArr/:resId", authManager, RestaurantCtrl.getRestaurantWorkers) 
 router.get("/myrestaurants", authManager, RestaurantCtrl.getMyRestaurants)
 router.get("/myworks", authWorker, RestaurantCtrl.getMyWorkPlaces)
 router.patch("/editRest/:editId", authManager, RestaurantCtrl.editRestaurant)
