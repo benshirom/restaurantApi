@@ -123,14 +123,14 @@ exports.userCtrl = {
   },
   editWorkerActive: async (req, res) => {
     console.log(req.body.active)
-    if (!req.body.active) {
+    if (req.body.active==null||req.body.active==undefined) {
       return res.status(400).json({ msg: "Need to send active in body" });
     }
     try {
       let editId = req.params.editId;
       let userUpdate = await UserModel.updateOne(
         { _id: editId },
-        { $setOnInsert: { active: req.body.active } }
+        { $set: { active: req.body.active } }
       );
       console.log(userUpdate);
       res.json(userUpdate);
