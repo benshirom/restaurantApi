@@ -122,6 +122,7 @@ exports.userCtrl = {
     }
   },
   editWorkerActive: async (req, res) => {
+    console.log(req.body.active)
     if (!req.body.active) {
       return res.status(400).json({ msg: "Need to send active in body" });
     }
