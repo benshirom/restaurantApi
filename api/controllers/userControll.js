@@ -121,6 +121,23 @@ exports.userCtrl = {
       res.status(500).json({ msg: "err", err });
     }
   },
+  editWorkerActive: async (req, res) => {
+    if (!req.body.active) {
+      return res.status(400).json({ msg: "Need to send active in body" });
+    }
+    try {
+      let editId = req.params.editId;
+      let userUpdate = await UserModel.updateOne(
+        { _id: editId },
+        { $setOnInsert: { active: req.body.active } }
+      );
+      console.log(userUpdate);
+      res.json(userUpdate);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ msg: "err", err });
+    }
+  },
   //לוודא שלא מוחק פטים בזמן העדכון צריך לשלוח את כל המידע בערזרת ראוט  אחר
   editUser: async (req, res) => {
     let validBody = validUserEdit(req.body);
