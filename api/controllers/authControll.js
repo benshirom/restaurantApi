@@ -130,9 +130,10 @@ exports.authCtrl = {
       res.status(500).json({ msg: "err", err })
     }
   },
-// צריך לתקן CATCH TO L וגם ליצר אחד ל'םרלקר שאחרי אימות ישלח לדף מילוי פרטים 
+  // צריך לתקן CATCH TO L וגם ליצר אחד ל'םרלקר שאחרי אימות ישלח לדף מילוי פרטים 
   verifyUser: async (req, res) => {
     let { userId, uniqueString } = req.params;
+    let { worker } = req.query
     console.log("in")
     try {
       let verification = await VerificationModel.findOne({ id: userId })
@@ -149,24 +150,31 @@ exports.authCtrl = {
           } catch (error) {
             let message = "an error occurre while clearing expired user verification record";
             res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
-            
+
           }
         } else {
           console.log("בתוקף")
           let result = bcrypt.compare(uniqueString, hashedUniqueString)
           if (result) {
-            
+
             console.log("שווה")
             try {
-              let update = await UserModel.updateOne({ _id: userId }, { verified: true })
-              if (update) {
-                console.log("עדכן")
-                // delete verify user collection when verified
+              if (worker == "y") {
                 await VerificationModel.deleteOne({ id: userId })
-                res.redirect(`${config.ReactUrl}/messages/`);
-              } else {
-                let message = "an error occurre while updating user verified ";
-                res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
+
+                res.redirect(`${config.ReactUrl}/fillDetales/${userId}`)
+              }
+              else {
+                let update = await UserModel.updateOne({ _id: userId }, { verified: true })
+                if (update) {
+                  console.log("עדכן")
+                  // delete verify user collection when verified
+                  await VerificationModel.deleteOne({ id: userId })
+                  res.redirect(`${config.ReactUrl}/messages/`);
+                } else {
+                  let message = "an error occurre while updating user verified ";
+                  res.redirect(`${config.ReactUrl}/messages/?error=true&message=${message}`);
+                }
               }
             } catch (error) {
               await VerificationModel.deleteOne({ _id: userId })
