@@ -60,7 +60,7 @@ exports.userCtrl = {
     }
     try {
       let workerId = req.params.workerId;
-      let workerInfo = await UserModel.findOneAndUpdate(
+      let workerUpdate = await UserModel.findOneAndUpdate(
         {
           $and: [{ _id: workerId }, { verified: false }],
         },
@@ -76,14 +76,13 @@ exports.userCtrl = {
         { new: true }
       );
 
-      if (!workerInfo) {
+      if (!workerUpdate) {
         return res
-          .status(400)
+          .status(401)
           .json({ msg: "User not found or has already been verified" });
       }
 
-      workerUpdate.password = "*******";
-      console.log(workerUpdate);
+      // console.log(workerUpdate);
       res.status(201).json(workerUpdate);
     } catch (err) {
       if (err.code == 11000) {
