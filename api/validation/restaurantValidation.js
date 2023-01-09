@@ -6,6 +6,7 @@ exports.validateRestaurant = (_reqBody) => {
         name: Joi.string().min(2).max(99).required(),
         email: Joi.string().min(4).max(99).email().required(),
         phone: Joi.string().min(10).max(12).pattern(/^[0-9]+$/).required(),
+        kitchenZone: Joi.array().required(),
         address: {
             country: Joi.string().min(2).max(99),
             city: Joi.string().min(2).max(99),
@@ -23,6 +24,8 @@ exports.validateEditRestaurant = (_reqBody) => {
         name: Joi.string().min(2).max(99).required(),
         phone: Joi.string().min(10).max(12).pattern(/^[0-9]+$/).required(),
         info: Joi.string().min(3).max(500).allow(null, ""),
+        kitchenZone: Joi.array().required(),
+
         address: {
             country: Joi.string().min(2).max(50).allow(null,""),
             city: Joi.string().min(2).max(50).allow(null,""),

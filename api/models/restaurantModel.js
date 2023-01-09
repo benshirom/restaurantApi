@@ -1,5 +1,5 @@
 const { json } = require("express");
-const { number } = require("joi");
+const { number, string } = require("joi");
 const mongoose = require("mongoose");
 
 let restaurantSchema = new mongoose.Schema({
@@ -33,7 +33,7 @@ let restaurantSchema = new mongoose.Schema({
         ,
     //order Id
     orders:[mongoose.ObjectId],
-
+    kitchenZone:[{type:String ,default:""}],
     verified: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
   
