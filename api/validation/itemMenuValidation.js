@@ -8,6 +8,7 @@ exports.validateItemMenu = (_reqBody) => {
         video: Joi.string().min(2).max(999).allow(null, ""),
         price: Joi.number().min(0).required(),
         calories: Joi.number().allow(null, 0),
+        preparationArea:Joi.string().min(1).max(20).required(),
         category:Joi.string().min(2).max(20).required(),
         subCategory: Joi.string().min(2).max(20).allow(null, "")
         
@@ -23,6 +24,7 @@ exports.validateEditItemMenu = (_reqBody) => {
         video: Joi.string().min(2).max(999).allow(null, ""),
         price: Joi.number().min(0).required(),
         calories: Joi.number().allow(null, 0),
+        preparationArea:Joi.string().min(1).max(20).required(),
         category:Joi.string().min(2).max(20).required(),
         subCategory: Joi.string().min(2).max(20).allow(null, "")
        
