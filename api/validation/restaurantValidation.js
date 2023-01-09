@@ -14,7 +14,7 @@ exports.validateRestaurant = (_reqBody) => {
             num: Joi.number().min(1).max(500)   
              },
         info: Joi.string().min(3).max(500).allow(null, ""),
-        kitchenZone: Joi.array().required(),
+        kitchenZone: Joi.array().allow(null,[]),
     })
     return schemaJoi.validate(_reqBody);
 }
