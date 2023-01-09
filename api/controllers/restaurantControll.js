@@ -13,7 +13,7 @@ const { UserModel } = require("../models/userModel");
 exports.RestaurantCtrl = {
   createRestaurant: async (req, res) => {
     let validBody = validateRestaurant(req.body);
-
+console.log(req.body);
     if (validBody.error) return res.status(400).json(validBody.error.details);
 
     try {
