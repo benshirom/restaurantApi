@@ -33,7 +33,7 @@ let restaurantSchema = new mongoose.Schema({
         ,
     //order Id
     orders:[mongoose.ObjectId],
-    kitchenZone:[{ type: String }],
+    kitchenZone:[String ],
     verified: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
   
