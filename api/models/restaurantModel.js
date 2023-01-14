@@ -4,38 +4,41 @@ const mongoose = require("mongoose");
 
 let restaurantSchema = new mongoose.Schema({
     name: { type: String, default: "" },
-    email:{ type: String, default: "" },
+    email: { type: String, default: "" },
     phone: { type: String, default: "" },
-    info:{ type: String, default: "" },
+    info: { type: String, default: "" },
     address: {
-        country:{type: String, default: ""} ,
-        city:{type: String, default: ""} ,
-        Street: {type: String, default: ""},
+        country: { type: String, default: "" },
+        city: { type: String, default: "" },
+        Street: { type: String, default: "" },
         num: { type: Number, default: 1 }
     },
-    creatorID: { type:mongoose.ObjectId, default:null},
- 
-    gallery:{
-        img:[{type: String, default: ""}],
-        video:[{type: String, default: ""}],
+    creatorID: { type: mongoose.ObjectId, default: null },
+
+    gallery: {
+        img: [{ type: String, default: "" }],
+        video: [{ type: String, default: "" }],
     },
     //Item Menu Id
-    menu:[mongoose.ObjectId],
+    menu: [mongoose.ObjectId],
     //Worker Id
     workersArray: [mongoose.ObjectId],
     //Table Id
-    tables:[mongoose.ObjectId],
-    tablesCanvas:{
-       canvas: {type:JSON, default:""},
-       height:{type:String, default:""},
-       width:{type:String, default:""}
+    tables: [mongoose.ObjectId],
+    tablesCanvas: {
+        canvas: { type: JSON, default: "" },
+        height: { type: String, default: "" },
+        width: { type: String, default: "" }
     }
-        ,
+    ,
     //order Id
-    orders:[mongoose.ObjectId],
-    kitchenZone:[{type:String, default :""}],
+    orders: [mongoose.ObjectId],
+    kitchenZone: {
+        bars: [{ type: String, default: "" }],
+        kitchens: [{ type: String, default: "" }]
+    },
     verified: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
-  
-},{timestamps:true})
+
+}, { timestamps: true })
 exports.RestaurantModel = mongoose.model("restaurants", restaurantSchema);
