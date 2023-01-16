@@ -39,6 +39,7 @@ let restaurantSchema = new mongoose.Schema({
     },
     verified: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
+    shifts:[],
 
 }, { timestamps: true })
 exports.RestaurantModel = mongoose.model("restaurants", restaurantSchema);

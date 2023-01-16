@@ -250,4 +250,26 @@ console.log(req.body);
       res.status(500).json({ msg: "err", err });
     }
   },
+  setShifts: async (req, res) => {
+    console.log(req.body);
+    // let validBody = validateTablesCanvas(req.body);
+    if (!req.body) {
+      return res.status(400).json({ msg: "Need to shifts" });
+    }
+
+    let { resId } = req.params;
+
+    // if (!req.body.canvas) return res.status(400).json({ msg: "Need to send canvas" });
+    try {
+      let data = await RestaurantModel.updateOne(
+        { _id: resId },
+        { $set: { "shifts": req.body } }
+      );
+      console.log(data);
+      res.json(data);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ msg: "err", err });
+    }
+  },
 };
