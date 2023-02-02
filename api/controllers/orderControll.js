@@ -212,7 +212,6 @@ exports.OrderCtrl = {
     try {
       let tmpArr=[];
       let { orderId } = req.params;
-      console.log(req.body.items);
       req.body.items.forEach(async item => {
         let itemOrder = new itemOrderModel(item);
         console.log(itemOrder)
@@ -220,18 +219,14 @@ exports.OrderCtrl = {
         await itemOrder.save()
 
       });
-console.log(tmpArr)
-console.log(orderId)
-let order1 = await orderModel.findOne({ _id: orderId })
+
       let order = await orderModel.updateOne({ _id: orderId }, { $push: { 'orderItems': { $each: tmpArr } } });
       res.json(order);
-      console.log(order);
-      console.log(order1);
+      // console.log(order);
     } catch (err) {
       console.log(err);
       res.status(500).json({ msg: "there error try again later", err });
     }
-
 
   }
   // addOrderDeliveryOrTA: async (req, res) => {},
