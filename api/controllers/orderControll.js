@@ -222,7 +222,7 @@ exports.OrderCtrl = {
       });
 console.log(tmpArr)
 
-      let order = await orderModel.updateOne({ _id: orderId }, { $push: { 'orderItems': { $each: tmpArr } } });
+      let order = await orderModel.updateOne({ _id: orderId }, { $addToSet: { 'orderItems': { $each: tmpArr } } });
       res.json(order);
       console.log(order);
     } catch (err) {
