@@ -1,5 +1,5 @@
 exports.sockets = (socket) => {
-    socket.on("new-order",({data})=>{
+    socket.on("new-order",(data)=>{
         console.log(data)
         socket.broadcast.emit('new-order-from-server', data);
     })
