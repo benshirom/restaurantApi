@@ -230,7 +230,7 @@ exports.OrderCtrl = {
       model: 'itemorders'});
       
 
-      res.json(tmpArr);
+      res.json({_id:orderId,items:tmpArr});
       // console.log(order);
     } catch (err) {
       console.log(err);
