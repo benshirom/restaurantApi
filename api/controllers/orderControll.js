@@ -224,12 +224,20 @@ exports.OrderCtrl = {
       for (let item of req.body.items) {
         let itemOrder = new itemOrderModel(item);
         console.log(itemOrder)
-        await itemOrder.save()
-        itemOrder.populate({ path: 'itemMenuId', model: 'itemmenus' })
-        tmpArr.push(itemOrder);
-      }
+        let saveItemOrder = await itemOrder.save()
+        await saveItemOrder.populate({ path: 'itemMenuId', model: 'itemmenus' })
+        tmpArr.push(saveItemOrder);
+
+      });
+
       let order = await orderModel.findByIdAndUpdate({ _id: orderId }, { $push: { 'orderItems': { $each: tmpArr } } })
-       
+        .populate({
+          path: 'orderItems', populate: {
+            path: 'itemMenuId', model: 'itemmenus'
+
+          },
+          model: 'itemorders'
+        });
 
 
       res.json({ order, items: tmpArr });
