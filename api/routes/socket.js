@@ -1,7 +1,7 @@
 exports.sockets = (socket) => {
-    socket.on("new-order",(arr)=>{
-        console.log(arr)
-        socket.broadcast.emit('new-order-from-server', {items:arr});
+    socket.on("new-order",({data})=>{
+        console.log(data)
+        socket.broadcast.emit('new-order-from-server', data);
     })
     socket.on("typing-start",({roomID})=>{
         socket.to(roomID).emit("recieve-typing");
