@@ -231,13 +231,7 @@ exports.OrderCtrl = {
       };
 
       let order = await orderModel.findByIdAndUpdate({ _id: orderId }, { $push: { 'orderItems': { $each: tmpArr } } })
-        .populate({
-          path: 'orderItems', populate: {
-            path: 'itemMenuId', model: 'itemmenus'
-
-          },
-          model: 'itemorders'
-        });
+     
 
 
       res.json({ order, items: tmpArr });
