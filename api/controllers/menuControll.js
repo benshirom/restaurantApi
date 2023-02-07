@@ -3,7 +3,7 @@ const { UserModel } = require("../models/userModel");
 const { itemMenuModel } = require("../models/itemMenuModel");
 const { validateItemMenu,validateEditItemMenu } = require("../validation/itemMenuValidation");
 
-
+// צריך לעדכן את הבקשות מאחר והמודל השתנה
 exports.MenuCtrl = {
     getMenu: async (req, res) => {
         let { restId } = req.params
@@ -20,7 +20,7 @@ exports.MenuCtrl = {
         let validBody = validateItemMenu(req.body);
         let {restId } = req.params
 
-        if (validBody.error) return res.status(400).json(validBody.error.details);
+        if (validBody.error) return res.status(401).json(validBody.error.details);
         // let {workId}= req.params
         try {
             let itemMenu = new  itemMenuModel(req.body);
@@ -47,7 +47,7 @@ exports.MenuCtrl = {
 
             // console.log(rest)
 
-            res.json(itemDel)
+            res.json(itemDel,rest)
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })
@@ -70,36 +70,36 @@ exports.MenuCtrl = {
             res.status(500).json({ msg: "there error try again later", err })
         }
     },
-    editCategoryItemMenu: async (req, res) => {
+    // editCategoryItemMenu: async (req, res) => {
         
-        if (!req.body.category.name) {
-          return res.status(400).json({ msg: "Need to send category" });
-        }
-        let { editItemId } = req.params
-        try {
-            console.log(req.body)
-            let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.name':req.body.category.name}})
-            res.json(itemEdit)
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({ msg: "there error try again later", err })
-        }
-    },
-    editSubcategoryItemMenu: async (req, res) => {
+    //     if (!req.body.category.name) {
+    //       return res.status(400).json({ msg: "Need to send category" });
+    //     }
+    //     let { editItemId } = req.params
+    //     try {
+    //         console.log(req.body)
+    //         let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.name':req.body.category.name}})
+    //         res.json(itemEdit)
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.status(500).json({ msg: "there error try again later", err })
+    //     }
+    // },
+    // editSubcategoryItemMenu: async (req, res) => {
         
-        if (!req.body.category.subcategory) {
-          return res.status(400).json({ msg: "Need to send subcategory" });
-        }
-        let { editItemId } = req.params
-        try {
-            console.log(req.body)
-            let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.subcategory':req.body.category.subcategory}})
-            res.json(itemEdit)
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({ msg: "there error try again later", err })
-        }
-    }
+    //     if (!req.body.category.subcategory) {
+    //       return res.status(400).json({ msg: "Need to send subcategory" });
+    //     }
+    //     let { editItemId } = req.params
+    //     try {
+    //         console.log(req.body)
+    //         let itemEdit = await itemMenuModel.updateOne({ _id: editItemId },{$set:{'category.subcategory':req.body.category.subcategory}})
+    //         res.json(itemEdit)
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.status(500).json({ msg: "there error try again later", err })
+    //     }
+    // }
 
 }
 

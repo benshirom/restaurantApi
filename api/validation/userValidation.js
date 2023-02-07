@@ -81,12 +81,16 @@ exports.validUserEdit = (_reqBody) => {
       lastName: Joi.string().min(2).max(50).required()
     },
     phone: Joi.string().min(10).max(12).pattern(/^[0-9]+$/).required(),
-    worker: { pin: Joi.string().min(4).max(4).required() },
+    worker: { 
+      pin: Joi.string().min(4).max(4).required(),
+      jobs: Joi.array().required(),
+      restaurantID :Joi.array().required()
+     },
     address: {
       country: Joi.string().min(2).max(50).allow(null,""),
       city: Joi.string().min(2).max(50).allow(null,""),
       Street: Joi.string().min(2).max(50).allow(null,""),
-      num: Joi.number().min(2).max(50).allow(null,"")
+      num: Joi.number().min(1).max(50).allow(null,"")
     },
 
   })

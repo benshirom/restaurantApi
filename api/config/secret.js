@@ -8,6 +8,7 @@ exports.config = {
   authEmail: process.env.AUTH_EMAIL,
   authPass: process.env.AUTH_PASS,
   currentUrl: process.env.CURRENT_URL,
+  ReactUrl: process.env.REACT_URL,
   salRounds: Number(process.env.SAL_ROUNDS),
 
 
