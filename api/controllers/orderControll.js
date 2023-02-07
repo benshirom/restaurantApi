@@ -4,6 +4,7 @@ const { itemOrderModel } = require('../models/itemOrderModel');
 const { validateOrderByWorker, validateOrderByCustumer } = require("../validation/orderValidation");
 const { validateItemOrder, validateItemsOrder } = require("../validation/itemOrderValidation");
 
+
 exports.OrderCtrl = {
 
 
@@ -210,18 +211,28 @@ exports.OrderCtrl = {
       return res.status(400).json({ msg: "Need to send body" });
     }
     try {
-      let tmpArr=[];
+      let tmpArr = [];
       let { orderId } = req.params;
       req.body.items.forEach(async item => {
         let itemOrder = new itemOrderModel(item);
         console.log(itemOrder)
-        tmpArr.push(itemOrder._id);
-        await itemOrder.save()
+        let saveItemOrder = await itemOrder.save()
+        await saveItemOrder.populate({ path: 'itemMenuId', model: 'itemmenus' })
+        tmpArr.push(saveItemOrder);
 
       });
 
-      let order = await orderModel.updateOne({ _id: orderId }, { $push: { 'orderItems': { $each: tmpArr } } });
-      res.json(order);
+      let order = await orderModel.findByIdAndUpdate({ _id: orderId }, { $push: { 'orderItems': { $each: tmpArr } } })
+        .populate({
+          path: 'orderItems', populate: {
+            path: 'itemMenuId', model: 'itemmenus'
+
+          },
+          model: 'itemorders'
+        });
+
+
+      res.json({ order, items: tmpArr });
       // console.log(order);
     } catch (err) {
       console.log(err);
