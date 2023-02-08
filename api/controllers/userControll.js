@@ -17,7 +17,7 @@ exports.userCtrl = {
 
       if (req.tokenData.exp > Date.now()) {
         return res
-          .status(400)
+          .status(401)
           .json({ err: "Token is expierd , go and log in please" });
       }
 
