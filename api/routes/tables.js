@@ -10,7 +10,7 @@ router.get("/:tableID" ,authWorker,TableCtrl.getTable)
 router.patch("/create/:restId" ,authShiftManager,TableCtrl.createNewTable) 
 router.delete("/remove/:restId/:tableId" ,authShiftManager,TableCtrl.removeTableFromRestaurant) 
 router.patch("/edit/:editTableId", authShiftManager, TableCtrl.editTable)
-router.patch("/editOrderID/:editTableId/:orderID", authShiftManager, TableCtrl.editOrderID)
+router.patch("/editOrderID/:editTableId/:orderID", authWorker, TableCtrl.editOrderID)
 // router.patch("/location/:editTableId", authManager, TableCtrl.editLocation)
 // router.patch("/tableOwenr/:editTableId/:orderId", authManager, TableCtrl.editTableOwenr)
 
