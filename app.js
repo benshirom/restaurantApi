@@ -2,6 +2,8 @@ const express = require("express");
 const path = require("path");
 const http = require("http");
 const cors = require("cors");
+const { config } = require("./api/config/secret");
+
 // דואג שהאפליקציה תכיר את הקובץ אינוורמינט שמכיל 
 // משתנים סודיים והגדרות של השרת
 const {Server} = require("socket.io")
@@ -14,7 +16,7 @@ const app = express();
 
 // נותן גישה לכל הדומיינים לגשת לשרת שלנו
 app.use(cors({
-    origin : [ "http://localhost:3000","https://makeitsimple.netlify.app"],
+    origin : [ "http://localhost:3000",config.ReactUrl],
     credentials: true,
 }));
 // כדי שנוכל לקבל באדי
@@ -29,7 +31,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin : [ "http://localhost:3000","https://makeitsimple.netlify.app","http://localhost:3001"]
+        origin : [ "http://localhost:3000",config.ReactUrl,"http://localhost:3001"]
     }
 })
 

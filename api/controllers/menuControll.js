@@ -47,7 +47,7 @@ exports.MenuCtrl = {
 
             // console.log(rest)
 
-            res.json(itemDel,rest)
+            res.json({itemDel,rest})
         } catch (err) {
             console.log(err);
             res.status(500).json({ msg: "there error try again later", err })
