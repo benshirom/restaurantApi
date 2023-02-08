@@ -2,7 +2,7 @@ const express = require("express");
 const { RestaurantCtrl } = require("../controllers/restaurantControll");
 const { WorkerCtrl } = require("../controllers/workerControll");
 
-const { auth, authAdmin, authWorker, authManager, authWaiter } = require("../middlewares/auth");
+const { auth, authAdmin, authWorker, authManager, authWaiter, authShiftManager } = require("../middlewares/auth");
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ router.get("/myrestaurants", authManager, RestaurantCtrl.getMyRestaurants)
 router.get("/myworks", authWorker, RestaurantCtrl.getMyWorkPlaces)
 router.patch("/editRest/:editId", authManager, RestaurantCtrl.editRestaurant)
 router.get("/getCanvas/:resId",authWorker,RestaurantCtrl.getCanvas)
-router.patch("/setCanvas/:resId",authManager,RestaurantCtrl.setCanvas)
+router.patch("/setCanvas/:resId",authShiftManager,RestaurantCtrl.setCanvas)
 router.patch("/addimage/:resId",authManager,RestaurantCtrl.addImageToGallery)
 router.patch("/setShifts/:resId",authManager,RestaurantCtrl.setShifts)
 // router.get("/shifts" ,authWorker,RestaurantCtrl.shifts)
